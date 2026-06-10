@@ -119,13 +119,41 @@ A message was sent to rosslyal (G7 goal owner) on 2026-06-10 asking:
 - ASTRA can be positioned as the "automated version" — runs continuously vs one-off review
 - Pitch: "We'll deploy an agent that does the assessment for you. All you do is grant read-only access and read the report."
 
-## How to Continue Building
+## How to Continue Building (Session Resume)
 
-When starting a new session:
-1. Point to this repo: https://github.com/Maxim-Kondratyev/astra-agent
-2. Read this file for full context
-3. Check Phase 1 checklist above for next tasks
-4. Start with: project skeleton → first tool → agent wiring → CDK stack
+When starting a new session, say:
+
+> "I'm building ASTRA — an autonomous AWS assessment agent. The repo is https://github.com/Maxim-Kondratyev/astra-agent. Read the specs in /specs folder for full context. Let's continue building from where we left off."
+
+What the AI assistant should do:
+1. Clone or read the repo
+2. Read `specs/context.md` for all decisions and background
+3. Read `specs/requirements.md` for what to build
+4. Read `specs/design.md` for how to build it
+5. Check Phase 1 checklist for next tasks
+6. Continue from last completed step
+
+### Current Status (last updated: 2026-06-10)
+
+- [x] Project idea and vision defined
+- [x] Requirements spec written
+- [x] Design doc written
+- [x] Full context captured
+- [x] GitHub repo created (private)
+- [x] Architecture updated to full AgentCore platform
+- [x] Customer context upload feature added
+- [ ] **NEXT: Project skeleton (pyproject.toml, folder structure)**
+- [ ] NEXT: First tool — get_security_hub_findings
+- [ ] NEXT: Wire tool to Strands agent
+- [ ] NEXT: Run locally against own AWS account
+- [ ] CDK stack for deployment
+- [ ] Knowledge base with WA Security Pillar
+- [ ] HTML report generation
+- [ ] Module 1 (Resilience) tools
+- [ ] Module 3 (SaaS) tools
+- [ ] AgentCore Gateway integration
+- [ ] Cedar policy definition
+- [ ] First customer deployment
 
 ## Project Location
 
