@@ -5,6 +5,7 @@ __pycache__/
 dist/
 .venv/
 venv/
+*.egg
 
 # CDK
 cdk.out/
@@ -20,3 +21,15 @@ cdk.out/
 # Environment
 .env
 *.pem
+
+# Linting
+.ruff_cache/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Reports (generated)
+*.html
+!src/astra/report/templates/*.html
