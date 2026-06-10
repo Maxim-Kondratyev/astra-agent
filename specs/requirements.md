@@ -147,6 +147,42 @@ Mature ISV customers (e.g., JetBrains, Dynatrace) don't have time for lengthy ma
 - **No data leaves the account** — reports stay in customer's S3
 - **Customer controls execution** — they trigger it, they own the output
 
+## Customer Context Upload
+
+### Purpose
+Allow customers to upload their own architecture documentation so ASTRA can assess not only what's deployed, but also compare reality against documented intent.
+
+### What customers can upload:
+- Architecture diagrams (PDF, PNG, drawio exports)
+- Design documents (markdown, PDF, Word)
+- Runbooks and operational procedures
+- SLA definitions (RTO/RPO targets)
+- Security policies and compliance requirements
+- Network topology diagrams
+- Threat models
+
+### How it works:
+- Dedicated S3 prefix: `s3://<astra-bucket>/customer-docs/`
+- Customer uploads files directly (S3 console, CLI, or a simple upload script)
+- Bedrock Knowledge Base auto-syncs and indexes new documents
+- Agent uses this context during assessment to:
+  - Compare documented architecture vs actual deployed state
+  - Validate stated RTO/RPO against infrastructure capabilities
+  - Flag discrepancies between policy and reality
+  - Provide more relevant, context-aware recommendations
+
+### Assessment modes:
+- **Without customer docs**: ASTRA assesses against AWS best practices only
+- **With customer docs**: ASTRA also assesses against the customer's OWN stated goals and architecture
+
+### Security:
+- Documents stay in customer's S3 bucket (never leave the account)
+- No internet access — indexing happens within the account
+- Customer controls what they upload (no mandatory documents)
+- Documents are encrypted at rest (S3 SSE-KMS)
+
+---
+
 ## Non-Functional Requirements
 
 - Agent execution completes within 15 minutes per module
