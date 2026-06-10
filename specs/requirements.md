@@ -27,9 +27,17 @@ Mature ISV customers (e.g., JetBrains, Dynatrace) don't have time for lengthy ma
 | Component | Technology | Why |
 |-----------|-----------|-----|
 | Agent Framework | **Strands Agents SDK** (Python) | AWS open-source agent framework, counts for G7 |
-| Agent Runtime | **Amazon Bedrock AgentCore** | Managed hosting for the agent, counts for G7 |
+| Agent Runtime | **Amazon Bedrock AgentCore Runtime** | Serverless, session-isolated, no timeout limits |
+| Tool Management | **AgentCore Gateway** | MCP-compatible tools with semantic selection + auth |
+| Guardrails | **AgentCore Policy (Cedar)** | Provable read-only enforcement at platform level |
+| Audit | **AgentCore Observability** | Full step-by-step trace of every assessment |
+| Memory | **AgentCore Memory** | Trend tracking across assessment runs |
+| Quality | **AgentCore Evaluations** | Automated quality validation of findings |
+| Identity | **AgentCore Identity** | Customer IdP integration (Okta, Azure Entra) |
+| Discovery | **AgentCore Registry** | Share tools/agents across EMEA-ISV team |
+| Code Execution | **AgentCore Code Interpreter** | Dynamic analysis and chart generation |
 | Foundation Model | **Claude (Bedrock)** | Reasoning engine for assessment logic |
-| Knowledge Base | **Bedrock Knowledge Bases** (S3 + OpenSearch Serverless) | Stores WA pillars, SIP v2, Resilience Lifecycle docs |
+| Knowledge Base | **Bedrock Knowledge Bases** (S3 + OpenSearch Serverless) | Best practices + customer docs + assessment history |
 | AWS Data Sources | Security Hub, Config, IAM Access Analyzer, Resilience Hub, Trusted Advisor | Read-only queries for actual environment state |
 | Deployment | **CDK (Python)** | Infrastructure as Code for customer deployment |
 | Output | Structured JSON + HTML report | Assessment results |
@@ -37,32 +45,62 @@ Mature ISV customers (e.g., JetBrains, Dynatrace) don't have time for lengthy ma
 ## Architecture Overview
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    Customer AWS Account                   │
-│                                                          │
-│  ┌──────────────┐    ┌─────────────────────────────┐    │
-│  │ Read-Only    │    │ ASTRA Agent (Lambda/ECS)     │    │
-│  │ IAM Role     │◄───│                              │    │
-│  │              │    │  ┌─────────┐ ┌───────────┐  │    │
-│  │ - SecurityAudit   │  │ Module 1│ │ Module 2  │  │    │
-│  │ - ReadOnlyAccess  │  │Resilience│ │ Security  │  │    │
-│  │              │    │  └─────────┘ └───────────┘  │    │
-│  └──────────────┘    │  ┌─────────┐               │    │
-│                      │  │ Module 3│               │    │
-│  ┌──────────────┐    │  │ SaaS    │               │    │
-│  │ Knowledge    │    │  └─────────┘               │    │
-│  │ Base (S3)    │◄───│                              │    │
-│  │ - WA Pillars │    └─────────────────────────────┘    │
-│  │ - SIP v2     │                   │                    │
-│  │ - Resilience │                   ▼                    │
-│  │   Lifecycle  │    ┌─────────────────────────────┐    │
-│  └──────────────┘    │ Assessment Report (S3)       │    │
-│                      │ - Scores per module           │    │
-│                      │ - Prioritised findings        │    │
-│                      │ - Recommended actions         │    │
-│                      └─────────────────────────────┘    │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                    Customer AWS Account                           │
+│                                                                   │
+│  ┌─────────────┐     ┌──────────────────────────────────────┐   │
+│  │ AgentCore   │     │ ASTRA Agent (AgentCore Runtime)       │   │
+│  │ Policy      │────▶│                                       │   │
+│  │ (Cedar)     │     │  ┌───────────┐  ┌───────────────┐    │   │
+│  │ "Read-only" │     │  │ Gateway   │  │ Memory        │    │   │
+│  └─────────────┘     │  │ (MCP tools)│  │ (Trends/Hist) │    │   │
+│                       │  └───────────┘  └───────────────┘    │   │
+│  ┌─────────────┐     │  ┌───────────┐  ┌───────────────┐    │   │
+│  │ Identity    │────▶│  │Code Interp│  │ Evaluations   │    │   │
+│  │ (Okta/Entra)│     │  │(Analysis) │  │ (Quality)     │    │   │
+│  └─────────────┘     │  └───────────┘  └───────────────┘    │   │
+│                       │                                       │   │
+│  ┌─────────────┐     │  ┌───────────────────────────────┐    │   │
+│  │Observability│◀────│  │ Modules: Security|Resilience|  │    │   │
+│  │(Audit trail)│     │  │          SaaS                  │    │   │
+│  └─────────────┘     │  └───────────────────────────────┘    │   │
+│                       └──────────────────────────────────────┘   │
+│                                                                   │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │ Knowledge Base (Bedrock KB)                                 │  │
+│  │ ┌──────────────┐  ┌──────────────┐  ┌──────────────────┐  │  │
+│  │ │Best Practices│  │Customer Docs │  │Assessment History│  │  │
+│  │ │(TAM-provided)│  │(Cx-uploaded) │  │(Memory-backed)   │  │  │
+│  │ └──────────────┘  └──────────────┘  └──────────────────┘  │  │
+│  └────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
 ```
+
+### AgentCore Services Used
+
+| Service | Role in ASTRA | Phase |
+|---------|---------------|-------|
+| **Runtime** | Serverless execution — session isolation, no timeouts, auto-scale | MVP |
+| **Gateway** | Exposes AWS assessment tools as MCP endpoints, handles auth + semantic tool selection | MVP |
+| **Policy (Cedar)** | Enforces read-only at platform level — provable guardrail beyond IAM | MVP |
+| **Observability** | Full audit trail of every step, tool call, and decision — compliance-friendly | MVP |
+| **Memory** | Tracks findings across runs — enables trend reporting ("improved from 62 to 78") | Phase 2 |
+| **Evaluations** | Auto-validates assessment quality, regression testing when KB updates | Phase 2 |
+| **Identity** | Integrates with customer's IdP (Okta, Entra) for audit of who triggered runs | Phase 3 |
+| **Registry** | Registers ASTRA tools/modules for discovery by other TAMs' agents | Phase 3 |
+| **Code Interpreter** | Dynamic analysis scripts — cost calculations, custom charts for reports | Phase 3 |
+
+### Why AgentCore Over Plain Lambda
+
+| Concern | Lambda Approach | AgentCore Approach |
+|---------|----------------|-------------------|
+| Read-only enforcement | IAM only (misconfigurable) | IAM + Cedar policy (provable, auditable) |
+| Assessment history | Manual S3 report comparison | Memory service auto-tracks trends |
+| Quality assurance | Manual review | Evaluations auto-score every run |
+| Audit trail | CloudTrail (API-level only) | Full reasoning trace (step-by-step) |
+| Tool management | Hardcoded boto3 calls | Gateway with semantic selection |
+| Multi-customer | Separate deployments | Identity + Registry for governed multi-tenancy |
+| Timeout | 15-minute limit | No timeout limit |
 
 ## Modules
 

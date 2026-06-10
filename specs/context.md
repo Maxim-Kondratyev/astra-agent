@@ -35,8 +35,17 @@ ASTRA's pitch: "Grant read-only access, receive a comprehensive assessment. No m
 
 ### 4. Tech Stack (G7-qualifying)
 - **Strands Agents SDK** — AWS open-source agent framework
-- **Bedrock AgentCore** — managed agent runtime (if available in region, else Lambda)
-- **Bedrock Knowledge Bases** — RAG for best-practice retrieval
+- **Bedrock AgentCore** — full platform:
+  - Runtime: serverless agent execution, session isolation, no timeouts
+  - Gateway: MCP-compatible tools, semantic selection, auth handling
+  - Policy (Cedar): provable read-only enforcement at platform level
+  - Observability: full step-by-step reasoning trace (OTEL-compatible)
+  - Memory: trend tracking across assessment runs (Phase 2)
+  - Evaluations: automated quality validation (Phase 2)
+  - Identity: customer IdP integration (Phase 3)
+  - Registry: share tools across EMEA-ISV team (Phase 3)
+  - Code Interpreter: dynamic analysis and chart generation (Phase 3)
+- **Bedrock Knowledge Bases** — RAG for best-practice retrieval + customer docs
 - **CDK (Python)** — one-command deployment
 
 ### 5. Deployment Model
@@ -89,11 +98,12 @@ ASTRA's pitch: "Grant read-only access, receive a comprehensive assessment. No m
 
 ## Open Questions (To Resolve Before/During Build)
 
-1. **Where does the agent run?** Customer account (ideal for data sovereignty) vs TAM account (simpler if customer lacks Bedrock access)
-2. **Bedrock model access** — do JetBrains/Dynatrace have Bedrock enabled? If not, cross-account pattern needed
+1. **Where does the agent run?** Customer account (ideal for data sovereignty) vs TAM account (simpler if customer lacks Bedrock/AgentCore access)
+2. **Bedrock + AgentCore access** — do JetBrains/Dynatrace have both enabled? If not, cross-account pattern needed
 3. **Knowledge base update cadence** — quarterly? On-demand when new WA content drops?
 4. **Multi-account support** — should ASTRA assess all accounts in an AWS Organization, or one at a time?
-5. **AgentCore availability** — check if AgentCore is GA in eu-west-1 / eu-central-1
+5. **AgentCore regional availability** — confirm Runtime, Gateway, Policy are GA in eu-west-1 / eu-central-1
+6. **Customer doc upload workflow** — simple S3 upload? Presigned URL? Small web UI?
 
 ## Related Context
 

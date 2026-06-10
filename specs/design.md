@@ -23,15 +23,16 @@ What we just did — define requirements, modules, architecture, and success cri
 
 ## Step 2: BUILD
 
-### What you're building (4 components):
+### What you're building (5 components):
 
 #### A. The Agent (Python + Strands SDK)
 
 This is the brain. A Python application that:
 - Receives a command ("assess security" / "assess resilience" / "assess all")
-- Calls AWS APIs (read-only) to gather environment state
+- Calls AWS APIs (read-only) via AgentCore Gateway tools
 - Sends findings to the LLM along with best-practice knowledge
 - Produces a structured assessment report
+- Stores findings in AgentCore Memory for trend tracking
 
 ```python
 # Simplified concept — what the agent looks like
@@ -48,12 +49,12 @@ agent = Agent(
 result = agent("Assess the security posture of this AWS account")
 ```
 
-#### B. The Tools (Python functions the agent can call)
+#### B. The Tools (MCP-compatible via AgentCore Gateway)
 
-Each tool is a function that queries an AWS service and returns structured data:
+Each tool is registered in AgentCore Gateway as an MCP endpoint. The agent discovers and calls them via semantic selection:
 
 ```python
-# Example tool
+# Example tool — registered in Gateway
 @tool
 def get_security_hub_findings(severity: str = "HIGH") -> dict:
     """Retrieve Security Hub findings filtered by severity."""
@@ -66,6 +67,11 @@ Tools are grouped by module:
 - `resilience_tools`: Resilience Hub, EC2 (AZ spread), RDS, ELB, Route53
 - `saas_tools`: Resource tagging, VPC isolation, IAM boundaries
 
+Gateway provides:
+- Semantic tool selection (agent picks the right tool based on context)
+- Auth handling (cross-account credentials)
+- Composition (multiple tools via single MCP endpoint)
+
 #### C. The Knowledge Base (documents in S3)
 
 Static documents the agent retrieves from to compare "what is" vs "what should be":
@@ -74,14 +80,40 @@ Static documents the agent retrieves from to compare "what is" vs "what should b
 - SaaS Lens (PDF/markdown)
 - SIP v2 checklist (you author this)
 - Resilience Lifecycle Framework stages (you author this)
+- Customer-uploaded architecture docs (optional)
 
 Loaded into Bedrock Knowledge Bases with OpenSearch Serverless for vector search.
 
-#### D. The Infrastructure (CDK)
+#### D. The Policy (Cedar — read-only enforcement)
+
+Cedar policy enforced at AgentCore platform level:
+
+```cedar
+// ASTRA can only perform read operations
+permit(
+  principal == Agent::"astra",
+  action in [Action::"Describe", Action::"List", Action::"Get"],
+  resource
+);
+
+// Explicitly deny any write/modify/delete
+forbid(
+  principal == Agent::"astra",
+  action in [Action::"Create", Action::"Delete", Action::"Modify", Action::"Put"],
+  resource
+);
+```
+
+This guarantees read-only even if IAM is misconfigured — provable to any CISO.
+
+#### E. The Infrastructure (CDK)
 
 A CDK stack that deploys everything:
-- Lambda function (or ECS Fargate task) running the agent
-- IAM role with read-only policies
+- AgentCore Runtime workload (runs the agent)
+- AgentCore Gateway (MCP tools endpoint)
+- AgentCore Policy (Cedar read-only rules)
+- AgentCore Observability (tracing)
+- IAM role with read-only policies (SecurityAudit + ReadOnlyAccess)
 - S3 bucket for knowledge base + reports
 - Bedrock Knowledge Base resource
 - VPC endpoints (Bedrock, S3) — no internet needed
@@ -188,22 +220,26 @@ astra/
 
 | Decision | Options | Recommendation |
 |----------|---------|----------------|
-| Agent runtime | Lambda vs ECS Fargate | **Lambda** for MVP (simpler, cheaper, 15-min timeout sufficient) |
-| Agent hosting | Self-managed vs AgentCore | **AgentCore** if available in eu-west-1, else self-managed Lambda |
-| Knowledge base | Bedrock KB vs in-prompt context | **Bedrock KB** (scalable, updatable without redeploying agent) |
+| Agent runtime | Lambda vs AgentCore Runtime | **AgentCore Runtime** (no timeout, session isolation, serverless) |
+| Tool layer | Direct boto3 vs AgentCore Gateway | **Gateway** (MCP-compatible, semantic selection, auth handling) |
+| Read-only enforcement | IAM only vs IAM + Cedar | **IAM + Cedar Policy** (provable, auditable, CISO-friendly) |
+| Knowledge base | In-prompt context vs Bedrock KB | **Bedrock KB** (scalable, updatable, supports customer docs) |
 | Report storage | S3 vs email vs dashboard | **S3** (simple, secure, customer controls access) |
 | Trigger | Manual vs scheduled vs both | **Both** — manual for first run, EventBridge for recurring |
 | Model | Claude Sonnet vs Haiku | **Sonnet** for assessment quality, Haiku for cost-sensitive reruns |
+| Observability | CloudWatch only vs AgentCore Observability | **AgentCore Observability** (full reasoning trace, OTEL-compatible) |
+| Memory | None vs AgentCore Memory | **Memory** in Phase 2 (enables trend tracking across runs) |
 
 ---
 
 ## What You Need to Start
 
-1. **AWS account** with Bedrock model access enabled (Claude Sonnet)
+1. **AWS account** with Bedrock model access enabled (Claude Sonnet) + AgentCore access
 2. **Python 3.11+**
 3. **Strands SDK**: `pip install strands-agents strands-agents-tools`
-4. **AWS CDK**: `npm install -g aws-cdk`
-5. **boto3** (comes with Lambda, needed locally for dev)
+4. **AgentCore CLI**: [Getting started guide](https://docs.aws.amazon.com/bedrock-agentcore/latest/devguide/runtime-get-started-cli.html)
+5. **AWS CDK**: `npm install -g aws-cdk`
+6. **boto3** (comes with Lambda, needed locally for dev)
 
 ---
 
