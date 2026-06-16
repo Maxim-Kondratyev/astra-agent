@@ -76,8 +76,16 @@ python -m astra --context-dir ./customer-docs/ --html report.html
 | `--output FILE` | Raw JSON report |
 | `-m MODULE` | Module to assess (repeatable: `-m security -m resilience`) |
 | `-c DIR` | Customer context directory for tailored recommendations |
+| `--checks-only` | Run checks only — no LLM, no cost, CI/CD friendly (exits 1 if FAILs) |
 | `--model ID` | Bedrock model ID (default: Claude Sonnet 4) |
 | `--region` | AWS region for Bedrock API calls |
+
+### CI/CD Integration
+
+```bash
+# Fast check — no LLM, exits with code 1 if any FAIL
+python -m astra --checks-only -m security -o results.json
+```
 
 ## Customer Context Upload
 
@@ -148,6 +156,13 @@ This deploys:
 - **No internet egress** — Bedrock accessed via VPC endpoint
 - **No data leaves the account** — reports stay in customer's S3
 - **Customer controls execution** — they trigger it, they own the output
+
+## Performance
+
+- Checks run **concurrently** (3 modules in parallel) — typically 10-20s for all 34 checks
+- LLM report generation: ~15-30s
+- Total assessment time: **under 60 seconds**
+- `--checks-only` mode: **under 20 seconds**, zero cost (no Bedrock calls)
 
 ## Project Structure
 
