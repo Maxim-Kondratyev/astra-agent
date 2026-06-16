@@ -162,6 +162,23 @@ def generate_html_report(agent_output: str, account_id: str = "Unknown") -> str:
     else:
         top_recs_html = ""
 
+    # Checklist summary table
+    checks = data.get("checks", [])
+    if checks:
+        rows = ""
+        for c in checks:
+            status = c.get("status", "")
+            icon = {"PASS": "✅", "FAIL": "❌", "WARNING": "⚠️", "ERROR": "🚫"}.get(status, "?")
+            mod = c.get("module", "")
+            rows += f'<tr><td>{icon}</td><td><strong>{c.get("check_id", "")}</strong></td><td>{c.get("title", "")}</td><td>{MODULE_ICONS.get(mod, "")} {mod}</td><td>{c.get("finding", "")[:80]}</td></tr>'
+        checklist_table_html = f'''<div class="findings-section"><h2>📋 Checklist Summary</h2>
+<div style="background:white;border-radius:12px;padding:1rem;box-shadow:0 1px 4px rgba(0,0,0,0.08);overflow-x:auto;">
+<table style="width:100%;border-collapse:collapse;font-size:0.8rem;">
+<tr style="border-bottom:2px solid #e2e8f0;text-align:left;"><th style="padding:0.5rem;">⠀</th><th style="padding:0.5rem;">ID</th><th style="padding:0.5rem;">Check</th><th style="padding:0.5rem;">Module</th><th style="padding:0.5rem;">Finding</th></tr>
+{rows}</table></div></div>'''
+    else:
+        checklist_table_html = ""
+
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -232,6 +249,8 @@ footer .guarantee {{ background:#f0fdf4; border:1px solid #bbf7d0; border-radius
 <div class="modules-grid">
 {module_cards_html}
 </div>
+
+{checklist_table_html}
 
 <div class="findings-section">
     <h2>Findings ({len(findings)})</h2>

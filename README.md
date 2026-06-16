@@ -170,21 +170,33 @@ This deploys:
 astra-agent/
 ├── src/astra/
 │   ├── __main__.py          # CLI entry point
-│   ├── assessment.py        # Unified assessment runner
-│   ├── agent.py             # Strands agent (legacy mode)
+│   ├── assessment.py        # Concurrent runner (checks → LLM → report)
 │   ├── checklist/
-│   │   ├── resilience.py    # 12 WA Reliability Pillar checks
+│   │   ├── __init__.py      # CheckResult, Status types
 │   │   ├── security.py      # 12 WA Security Pillar checks
+│   │   ├── resilience.py    # 12 WA Reliability Pillar checks
 │   │   └── saas.py          # 10 WA SaaS Lens checks
 │   ├── report/
-│   │   └── generator.py     # HTML report generator
-│   ├── knowledge/           # WA best practice reference docs
-│   └── tools/               # Raw AWS API tools (legacy)
-├── infra/                   # CDK deployment stack
-├── specs/                   # Requirements & design docs
-├── docs/                    # Architecture & security docs
+│   │   └── generator.py     # JSON → styled HTML report
+│   └── knowledge/           # WA best practice reference docs
+├── infra/                   # CDK stack for automated deployment
+├── docs/
+│   ├── DEPLOYMENT.md        # Full deployment guide
+│   ├── SECURITY.md          # Security model & guarantees
+│   ├── MODULES.md           # All 34 checks documented
+│   └── ARCHITECTURE.md      # System design & flow
+├── examples/
+│   └── customer-context/    # Sample architecture doc
+├── specs/                   # Original requirements & design
 └── pyproject.toml
 ```
+
+## Documentation
+
+- **[Deployment Guide](docs/DEPLOYMENT.md)** — Step-by-step setup (CLI or CDK)
+- **[Security Model](docs/SECURITY.md)** — How read-only is enforced
+- **[Modules & Checks](docs/MODULES.md)** — All 34 checks with WA references
+- **[Architecture](docs/ARCHITECTURE.md)** — System design and flow
 
 ## Tech Stack
 
@@ -194,8 +206,5 @@ astra-agent/
 | Foundation Model | Claude Sonnet (Amazon Bedrock) |
 | Infrastructure | AWS CDK (Python) |
 | Checks | boto3 (read-only AWS API calls) |
-| Report | HTML with inline CSS |
-
-## License
-
-Private — EMEA-ISV TAM team internal project.
+| Concurrency | ThreadPoolExecutor (3 modules in parallel) |
+| Report | Styled HTML with inline CSS |
