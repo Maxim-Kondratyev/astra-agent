@@ -1,179 +1,186 @@
-# ASTRA
+# ASTRA — Autonomous Security, Tenancy & Resilience Assessor
 
-**Autonomous Security, Tenancy & Resilience Assessor**
-
-An AI-powered agent that autonomously assesses AWS environments against security, resilience, and SaaS/tenancy best practices — using **read-only access only**.
-
-[![Model](https://img.shields.io/badge/Model-Claude%20Opus%204.8-blueviolet)]()
-[![Framework](https://img.shields.io/badge/Framework-Strands%20Agents-orange)]()
-[![Access](https://img.shields.io/badge/Access-Read%20Only-green)]()
-[![Deploy](https://img.shields.io/badge/Deploy-AWS%20CDK-blue)]()
-
----
-
-## What ASTRA Does
-
-ASTRA deploys into a customer's AWS account, calls 15 read-only assessment tools across 3 modules, and produces a scored report with prioritised remediation recommendations.
+An AI-powered agent that autonomously assesses AWS environments against the **Well-Architected Framework** using read-only access. Runs 34 prebuilt checks across Security, Resilience, and SaaS/Tenancy — then produces an executive-grade report with prioritised recommendations.
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│  ASTRA Agent (Claude Opus 4.8)                               │
-│                                                              │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │  🛡️ Security  │  │  🏗️ Resilience│  │  🏢 SaaS      │      │
-│  │  5 tools     │  │  5 tools     │  │  5 tools     │      │
-│  └──────────────┘  └──────────────┘  └──────────────┘      │
-│                                                              │
-│  ────────────────── READ-ONLY ONLY ──────────────────────── │
-└──────────────────────────────────────────────────────────────┘
-         │                                        │
-         ▼                                        ▼
-  AWS APIs (read)                         HTML Report (write to S3)
+python -m astra -m security -m resilience --html report.html
 ```
 
-### Output Example
+## How It Works
 
-| Metric | Value |
-|--------|-------|
-| Overall Score | 31/100 |
-| Risk Level | CRITICAL |
-| Findings | 18 prioritised |
-| Categories | Identity, Network, Data, Infrastructure, Logging |
-| Run Time | ~3 minutes |
-| Cost | ~$3-5 per run (Opus) or ~$0.50 (Sonnet) |
-
----
-
-## Quick Start
-
-```bash
-pip install -e .
-python -m astra --html report.html
-open report.html
+```
+┌────────────────┐     ┌──────────────────┐     ┌────────────────┐
+│  34 Prebuilt   │────▶│  LLM Analysis    │────▶│  HTML Report   │
+│  AWS Checks    │     │  (Claude/Bedrock) │     │  with Scores   │
+│  (read-only)   │     │  + Customer Ctx   │     │  & Remediation │
+└────────────────┘     └──────────────────┘     └────────────────┘
 ```
 
-See [Deployment Guide](docs/DEPLOYMENT.md) for full instructions.
-
----
+1. **Deterministic checks** — runs all checks against AWS APIs (read-only, no modifications)
+2. **LLM analysis** — passes results + WA best practices to Claude for scoring and narrative
+3. **Report generation** — produces styled HTML with per-module scores and prioritised fixes
 
 ## Modules
 
-| Module | Checks | WA Pillar |
+| Module | Checks | WA Mapping |
 |--------|--------|-----------|
-| 🛡️ **Security** | Security Hub, GuardDuty, IAM, S3, Encryption | Security |
-| 🏗️ **Resilience** | Multi-AZ, Backups, Auto-Scaling, Failover, SPOF | Reliability |
-| 🏢 **SaaS/Tenancy** | Isolation, Tagging, Control Plane, Cost, Observability | SaaS Lens |
+| 🛡️ Security | 12 | Security Pillar (SEC 2–7) |
+| 🏗️ Resilience | 12 | Reliability Pillar (REL 6–13) |
+| 🏢 SaaS | 10 | SaaS Lens |
 
-Run individual modules:
+### Security Checks (SEC-01 to SEC-12)
+Security Hub, GuardDuty, root MFA, password policy, S3 public access block, CloudTrail, VPC flow logs, security groups, IAM Access Analyzer, EBS encryption default, Secrets Manager rotation, KMS key rotation.
+
+### Resilience Checks (REL-01 to REL-12)
+RDS Multi-AZ, EC2 AZ spread, ASG health checks, ASG multi-AZ, ELB multi-AZ, AWS Backup plans, RDS backup retention, NAT Gateway redundancy, EBS snapshots, Route 53 health checks, ElastiCache Multi-AZ, CloudWatch alarms.
+
+### SaaS Checks (SAS-01 to SAS-10)
+Tenant tagging, cost allocation tags, permission boundaries, resource isolation, per-tenant monitoring, API throttling, control plane separation, cross-tenant access, tenant onboarding automation, noisy neighbour detection.
+
+## Quick Start
+
+### Prerequisites
+- Python 3.11+
+- AWS credentials with **read-only** access (SecurityAudit + ReadOnlyAccess managed policies)
+- Amazon Bedrock model access (Claude Sonnet)
+
+### Install
+
 ```bash
-python -m astra --module security
-python -m astra --module resilience
-python -m astra --module saas
+git clone https://github.com/Maxim-Kondratyev/astra-agent.git
+cd astra-agent
+pip install -e .
 ```
 
-See [Modules Guide](docs/MODULES.md) for details on all 15 tools.
+### Run
 
----
+```bash
+# All modules
+python -m astra --html report.html
 
-## Security Guarantees
+# Single module
+python -m astra -m security --html security-report.html
 
-ASTRA enforces read-only access through **4 layers of defence**:
+# Multiple modules
+python -m astra -m security -m resilience --html report.html
 
-1. **IAM Managed Policies** — SecurityAudit + ReadOnlyAccess (no write permissions)
-2. **Explicit DENY** — Blocks Create/Delete/Modify/Update/Terminate on all resources
-3. **Code-Level** — Only `describe_*`, `list_*`, `get_*` boto3 calls in the codebase
-4. **Network** — VPC endpoints only, no internet egress
-
-See [Security Model](docs/SECURITY.md) for the full threat model and CISO talking points.
-
----
-
-## Architecture
-
-```mermaid
-graph LR
-    Trigger[Trigger<br/>Manual / Schedule] --> Lambda[Lambda<br/>15-min timeout]
-    Lambda --> Agent[ASTRA Agent<br/>Strands SDK]
-    Agent --> Bedrock[Claude Opus 4.8<br/>via VPC Endpoint]
-    Agent --> Tools[15 Assessment Tools<br/>Read-only AWS APIs]
-    Agent --> Report[HTML + JSON Report<br/>→ S3 Bucket]
+# With customer context (architecture docs)
+python -m astra --context-dir ./customer-docs/ --html report.html
 ```
 
-See [Architecture](docs/ARCHITECTURE.md) for full diagrams (Mermaid), data flows, and technology choices.
+### Output Options
 
----
+| Flag | Description |
+|------|-------------|
+| `--html FILE` | Styled HTML report |
+| `--output FILE` | Raw JSON report |
+| `-m MODULE` | Module to assess (repeatable: `-m security -m resilience`) |
+| `-c DIR` | Customer context directory for tailored recommendations |
+| `--model ID` | Bedrock model ID (default: Claude Sonnet 4) |
+| `--region` | AWS region for Bedrock API calls |
 
-## Deployment to Customer Accounts
+## Customer Context Upload
+
+Drop your architecture documentation in a folder and pass it with `--context-dir`:
+
+```bash
+mkdir customer-docs/
+# Add your files:
+#   customer-docs/architecture.md
+#   customer-docs/rto-rpo-requirements.txt
+#   customer-docs/network-topology.yaml
+
+python -m astra -c ./customer-docs/ --html report.html
+```
+
+Supported formats: `.md`, `.txt`, `.yaml`, `.yml`, `.json`
+
+The agent uses this context to:
+- Compare **documented architecture** against **actual deployed state**
+- Validate stated RTO/RPO against backup/failover configuration
+- Flag discrepancies between policy and reality
+- Provide more relevant, context-aware recommendations
+
+## Deployment (CDK)
+
+For automated recurring assessments in a customer's AWS account:
 
 ```bash
 cd infra
+pip install -e ".[infra]"
 cdk deploy
-# → Creates: IAM role, Lambda, S3 bucket, VPC with endpoints
-# → No internet access, no data leaves the account
 ```
 
-See [Deployment Guide](docs/DEPLOYMENT.md) for CDK parameters, scheduling, and customer checklist.
+This deploys:
+- Lambda function running ASTRA on schedule (weekly)
+- Read-only IAM role with **explicit deny** on all mutations
+- VPC with no internet access (Bedrock via VPC endpoint)
+- S3 bucket for reports (encrypted, versioned)
 
----
+## Architecture
 
-## Documentation
+```
+┌─── Customer AWS Account ────────────────────────────────────────┐
+│                                                                   │
+│  ┌─────────────┐    ┌──────────────────────────────────────┐    │
+│  │ IAM Role    │    │ ASTRA Agent                          │    │
+│  │ (read-only  │───▶│                                      │    │
+│  │  + deny)    │    │  ┌────────────┐  ┌───────────────┐   │    │
+│  └─────────────┘    │  │ Checklists │  │ LLM Analysis  │   │    │
+│                      │  │ 34 checks  │  │ (Bedrock)     │   │    │
+│  ┌─────────────┐    │  └────────────┘  └───────────────┘   │    │
+│  │ Customer    │───▶│  ┌────────────────────────────────┐   │    │
+│  │ Context     │    │  │ Report Generator (HTML/JSON)    │   │    │
+│  │ (optional)  │    │  └────────────────────────────────┘   │    │
+│  └─────────────┘    └──────────────────────────────────────┘    │
+│                                                                   │
+│  ┌────────────────────────────────────────────────────────────┐  │
+│  │ AWS APIs (read-only): Security Hub, GuardDuty, IAM, EC2,  │  │
+│  │ RDS, ELB, Backup, Route53, CloudTrail, S3, KMS, Lambda... │  │
+│  └────────────────────────────────────────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────┘
+```
 
-| Document | Contents |
-|----------|----------|
-| [Architecture](docs/ARCHITECTURE.md) | System design, Mermaid diagrams, technology choices |
-| [Deployment](docs/DEPLOYMENT.md) | CLI quick start, CDK production deployment, cost estimates |
-| [Security](docs/SECURITY.md) | 4-layer defence-in-depth, threat model, verification commands |
-| [Modules](docs/MODULES.md) | All 15 tools, scoring methodology, custom module guide |
+## Security Guarantees
 
----
-
-## Technology Stack
-
-| Component | Technology |
-|-----------|-----------|
-| Agent Framework | [Strands Agents SDK](https://github.com/strands-agents/sdk-python) |
-| Foundation Model | Claude Opus 4.8 (Amazon Bedrock) |
-| Compute | AWS Lambda (serverless, 15-min timeout) |
-| Deployment | AWS CDK (Python) |
-| Networking | VPC Endpoints (zero internet) |
-| Storage | S3 (encrypted, no public access) |
-| IAM | SecurityAudit + ReadOnlyAccess + Explicit DENY |
-
----
+- **Read-only access only** — agent CANNOT modify resources
+- **Explicit IAM deny** on all create/update/delete/terminate actions
+- **No internet egress** — Bedrock accessed via VPC endpoint
+- **No data leaves the account** — reports stay in customer's S3
+- **Customer controls execution** — they trigger it, they own the output
 
 ## Project Structure
 
 ```
 astra-agent/
 ├── src/astra/
-│   ├── agent.py                 # Agent definition (model, tools, prompt)
-│   ├── __main__.py              # CLI entrypoint
-│   ├── tools/
-│   │   ├── security.py          # 5 security tools
-│   │   ├── resilience.py        # 5 resilience tools
-│   │   └── saas.py              # 5 SaaS/tenancy tools
-│   └── report/
-│       └── generator.py         # JSON → styled HTML report
-├── infra/
-│   ├── stacks/astra_stack.py    # CDK stack (VPC, IAM, Lambda, S3)
-│   └── lambda/handler.py        # Lambda handler
-├── docs/                        # Architecture, deployment, security, modules
-├── specs/                       # Requirements, design, context
+│   ├── __main__.py          # CLI entry point
+│   ├── assessment.py        # Unified assessment runner
+│   ├── agent.py             # Strands agent (legacy mode)
+│   ├── checklist/
+│   │   ├── resilience.py    # 12 WA Reliability Pillar checks
+│   │   ├── security.py      # 12 WA Security Pillar checks
+│   │   └── saas.py          # 10 WA SaaS Lens checks
+│   ├── report/
+│   │   └── generator.py     # HTML report generator
+│   ├── knowledge/           # WA best practice reference docs
+│   └── tools/               # Raw AWS API tools (legacy)
+├── infra/                   # CDK deployment stack
+├── specs/                   # Requirements & design docs
+├── docs/                    # Architecture & security docs
 └── pyproject.toml
 ```
 
----
+## Tech Stack
 
-## Status
-
-✅ **All 3 modules implemented and tested**  
-✅ **15 assessment tools (all read-only)**  
-✅ **CDK stack with VPC endpoints + EventBridge schedule**  
-✅ **HTML report generator with multi-module scoring**  
-✅ **Comprehensive documentation**
-
----
+| Component | Technology |
+|-----------|-----------|
+| Agent Framework | [Strands Agents SDK](https://github.com/strands-agents/sdk-python) |
+| Foundation Model | Claude Sonnet (Amazon Bedrock) |
+| Infrastructure | AWS CDK (Python) |
+| Checks | boto3 (read-only AWS API calls) |
+| Report | HTML with inline CSS |
 
 ## License
 
-Internal — EMEA-ISV TAM team. Contact the author for access.
+Private — EMEA-ISV TAM team internal project.
