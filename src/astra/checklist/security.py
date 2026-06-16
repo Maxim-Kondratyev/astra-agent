@@ -7,7 +7,7 @@ SEC 8 (data in transit), SEC 9 (incident response).
 
 import boto3
 
-from astra.checklist.resilience import CheckResult, Status
+from astra.checklist import CheckResult, Status
 
 
 def check_security_hub_enabled() -> CheckResult:

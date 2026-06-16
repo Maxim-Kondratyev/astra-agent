@@ -10,7 +10,8 @@ import boto3
 from strands import Agent
 from strands.models.bedrock import BedrockModel
 
-from astra.checklist.resilience import CheckResult, Status, run_resilience_checklist
+from astra.checklist import CheckResult, Status
+from astra.checklist.resilience import run_resilience_checklist
 from astra.checklist.saas import run_saas_checklist
 from astra.checklist.security import run_security_checklist
 

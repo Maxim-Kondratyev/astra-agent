@@ -6,7 +6,7 @@ cost optimization, and governance.
 
 import boto3
 
-from astra.checklist.resilience import CheckResult, Status
+from astra.checklist import CheckResult, Status
 
 
 def check_tenant_tagging_strategy() -> CheckResult:

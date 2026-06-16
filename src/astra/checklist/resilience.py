@@ -1,35 +1,8 @@
-"""Resilience checklist — prebuilt Well-Architected Reliability Pillar checks.
-
-Each check:
-- Runs a deterministic read-only AWS API query
-- Returns a CheckResult with status (PASS/FAIL/WARNING), evidence, and recommendation
-- Maps to a specific WA question/best practice
-
-The agent runs ALL checks, then passes results to the LLM for narrative synthesis.
-"""
-
-from dataclasses import dataclass, field
-from enum import Enum
+"""Resilience checklist — prebuilt Well-Architected Reliability Pillar checks."""
 
 import boto3
 
-
-class Status(str, Enum):
-    PASS = "PASS"
-    FAIL = "FAIL"
-    WARNING = "WARNING"
-    ERROR = "ERROR"
-
-
-@dataclass
-class CheckResult:
-    check_id: str
-    title: str
-    status: Status
-    evidence: dict = field(default_factory=dict)
-    affected_resources: list[str] = field(default_factory=list)
-    recommendation: str = ""
-    wa_reference: str = ""
+from astra.checklist import CheckResult, Status
 
 
 # --- Individual checks ---
