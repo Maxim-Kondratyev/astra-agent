@@ -96,6 +96,30 @@ It was built for teams that:
 
 ---
 
+## Report Preview
+
+Here's what the assessment report looks like:
+
+### Score & Executive Summary
+![Header and Score](docs/screenshots/01-header-score.png)
+
+### Module Scores
+![Module Breakdown](docs/screenshots/02-modules.png)
+
+### Top Recommendations (with risk if not addressed)
+![Recommendations](docs/screenshots/03-recommendations.png)
+
+### Infrastructure Architecture
+![Infrastructure](docs/screenshots/04-infrastructure.png)
+
+### Checklist Summary
+![Checklist](docs/screenshots/05-checklist.png)
+
+### Detailed Findings
+![Findings](docs/screenshots/06-findings.png)
+
+---
+
 ## Quick Start
 
 ```bash
