@@ -288,7 +288,8 @@ Deploys Lambda + IAM + private VPC + S3 + weekly EventBridge schedule. See [Depl
 
 | Document | Contents |
 |----------|----------|
-| **[Deployment Guide](docs/DEPLOYMENT.md)** | Step-by-step setup (CLI + CDK + IAM) |
+| **[Getting Started](docs/GETTING-STARTED.md)** | Prerequisites, setup checklist, common issues |
+| **[Deployment Guide](docs/DEPLOYMENT.md)** | CLI + CDK deployment options |
 | **[Security Model](docs/SECURITY.md)** | 4-layer read-only enforcement |
 | **[Modules & Checks](docs/MODULES.md)** | All 34 checks with WA references |
 | **[Architecture](docs/ARCHITECTURE.md)** | E2E flow, components, data model |
