@@ -298,7 +298,15 @@ def run_interactive():
     html = generate_html_report(result["report"], account_id=config["account_id"], mermaid_diagram=result.get("mermaid_diagram"))
     with open(report_file, "w") as f:
         f.write(html)
-    print(f"\n✅ Report saved → {report_file}")
+
+    import os
+    full_path = os.path.abspath(report_file)
+    print(f"\n✅ Report saved → {full_path}")
+
+    # Auto-open in browser
+    import webbrowser
+    webbrowser.open(f"file://{full_path}")
+    print("   📂 Opened in your browser")
 
     # Offer chat
     print()
