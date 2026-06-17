@@ -237,7 +237,7 @@ def run_assessment(
         customer_context_section=customer_context_section,
     )
 
-    model = BedrockModel(model_id=model_id, region_name=region)
+    model = BedrockModel(model_id=model_id, region_name=region, max_tokens=16000)
     agent = Agent(model=model, tools=[], system_prompt="You are a technical report generator. Return only valid JSON.")
     response = agent(prompt)
     llm_time = time.time() - t1
