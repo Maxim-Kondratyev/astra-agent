@@ -75,12 +75,15 @@ def generate_mermaid_diagram(infra: dict, check_results: list[CheckResult] | Non
             az_short = az_name[-2:]  # e.g., "1a"
             az_node = f"AZ{vi}_{az_short.replace('-','')}"
             inst_count = az_data["instances"]
+            has_content = False
 
-            az_content = f"{az_name}"
+            lines.append(f"        subgraph {az_node}[\"{az_name}\"]")
+
+            # EC2 instances in this AZ
             if inst_count > 0:
-                az_content += f"<br/>🖥️ {inst_count} instance(s)"
-
-            lines.append(f"        subgraph {az_node}[\"{az_content}\"]")
+                ec2_node = f"EC2_{vi}_{az_short.replace('-','')}"
+                lines.append(f"            {ec2_node}[🖥️ {inst_count} instance(s)]:::compute")
+                has_content = True
 
             # RDS in this AZ
             for db in infra.get("rds_instances", []):
@@ -89,6 +92,12 @@ def generate_mermaid_diagram(infra: dict, check_results: list[CheckResult] | Non
                     warn = "⚠️ " if not db["multi_az"] or db["id"] in failed_resources else "✓ "
                     ma = "Multi-AZ" if db["multi_az"] else "Single-AZ"
                     lines.append(f"            {db_node}[(\"{warn}{db['id']}<br/>{db['engine']} · {ma}\")]:::database")
+                    has_content = True
+
+            # Mermaid requires at least one node in a subgraph
+            if not has_content:
+                placeholder = f"empty_{vi}_{az_short.replace('-','')}"
+                lines.append(f"            {placeholder}[subnet]:::az")
 
             lines.append("        end")
 
