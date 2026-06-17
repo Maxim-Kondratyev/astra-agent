@@ -106,9 +106,35 @@ def _load_customer_context(context_dir: str | Path | None) -> str:
     if not context_path.exists():
         return ""
     docs = []
-    for ext in ("*.md", "*.txt", "*.yaml", "*.yml", "*.json"):
+
+    # Text-based formats (always supported)
+    for ext in ("*.md", "*.txt", "*.yaml", "*.yml", "*.json", "*.csv", "*.toml", "*.ini", "*.cfg"):
         for f in sorted(context_path.glob(ext)):
             docs.append(f"### {f.name}\n{f.read_text(errors='ignore')[:5000]}")
+
+    # PDF support (optional — pip install astra-agent[docs])
+    for f in sorted(context_path.glob("*.pdf")):
+        try:
+            from pypdf import PdfReader
+            reader = PdfReader(str(f))
+            text = "\n".join(page.extract_text() or "" for page in reader.pages[:20])
+            docs.append(f"### {f.name}\n{text[:5000]}")
+        except ImportError:
+            docs.append(f"### {f.name}\n[PDF detected but pypdf not installed. Run: pip install 'astra-agent[docs]']")
+        except Exception:
+            docs.append(f"### {f.name}\n[Could not read PDF]")
+
+    # DOCX support (optional — pip install astra-agent[docs])
+    for f in sorted(context_path.glob("*.docx")):
+        try:
+            from docx import Document
+            doc = Document(str(f))
+            text = "\n".join(p.text for p in doc.paragraphs if p.text.strip())
+            docs.append(f"### {f.name}\n{text[:5000]}")
+        except ImportError:
+            docs.append(f"### {f.name}\n[DOCX detected but python-docx not installed. Run: pip install 'astra-agent[docs]']")
+        except Exception:
+            docs.append(f"### {f.name}\n[Could not read DOCX]")
     return "\n\n".join(docs[:10])
 
 

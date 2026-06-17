@@ -210,14 +210,14 @@ def _configure_context() -> str | None:
     print("━" * 60)
     print()
     print("  Upload your architecture docs for tailored recommendations:")
-    print("  • Architecture diagrams or design documents (.md, .txt)")
+    print("  • Architecture diagrams or design documents (.md, .txt, .pdf, .docx)")
     print("  • RTO/RPO requirements, SLA definitions")
-    print("  • Security policies, network topology (.yaml)")
+    print("  • Security policies, network topology (.yaml, .json, .csv)")
     print()
     path = _ask("Path to docs folder (Enter to skip)")
     if path and Path(path).exists():
         files = list(Path(path).glob("*.*"))
-        relevant = [f for f in files if f.suffix in (".md", ".txt", ".yaml", ".yml", ".json")]
+        relevant = [f for f in files if f.suffix in (".md", ".txt", ".yaml", ".yml", ".json", ".csv", ".pdf", ".docx", ".toml")]
         if relevant:
             print(f"  ✅ Found {len(relevant)} document(s): {', '.join(f.name for f in relevant[:5])}")
             return path
