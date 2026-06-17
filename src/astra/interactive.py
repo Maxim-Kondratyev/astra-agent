@@ -49,8 +49,54 @@ def _choose_modules() -> list[str]:
     return module_map.get(choice, ["security", "resilience", "saas"])
 
 
+def _show_credential_help():
+    """Show step-by-step credential setup guide when no credentials are found."""
+    print()
+    print("  ┌────────────────────────────────────────────────────────┐")
+    print("  │  📖 How to set up AWS credentials for ASTRA            │")
+    print("  └────────────────────────────────────────────────────────┘")
+    print()
+    print("  ASTRA needs READ-ONLY access. Choose one method:")
+    print()
+    print("  ── Option 1: AWS SSO (recommended if your org uses SSO) ──")
+    print()
+    print("     aws configure sso")
+    print("     # Follow the prompts (SSO URL, region, role)")
+    print("     aws sso login --profile your-profile")
+    print("     export AWS_PROFILE=your-profile")
+    print()
+    print("  ── Option 2: IAM User with access keys ──")
+    print()
+    print("     1. Go to AWS Console → IAM → Users → Your user")
+    print("     2. Security credentials → Create access key")
+    print("     3. Run:")
+    print()
+    print("        aws configure")
+    print("        # Enter: Access Key ID, Secret Access Key, region (e.g. us-east-1)")
+    print()
+    print("  ── Option 3: Temporary credentials (from your admin) ──")
+    print()
+    print("     export AWS_ACCESS_KEY_ID=AKIA...")
+    print("     export AWS_SECRET_ACCESS_KEY=...")
+    print("     export AWS_SESSION_TOKEN=...  (if using temp creds)")
+    print("     export AWS_DEFAULT_REGION=us-east-1")
+    print()
+    print("  ── Required IAM permissions ──")
+    print()
+    print("     Attach these AWS managed policies to your user/role:")
+    print("     • arn:aws:iam::aws:policy/SecurityAudit")
+    print("     • arn:aws:iam::aws:policy/ReadOnlyAccess")
+    print()
+    print("     Or create a role with these policies and use option (b)")
+    print("     in the menu below to assume it.")
+    print()
+    print("  ─────────────────────────────────────────────────────────")
+    print()
+    _ask("  Press Enter when ready")
+
+
 def _configure_aws() -> dict:
-    """Configure AWS access. Returns dict with optional role_arn."""
+    """Configure AWS access. Returns dict with account_id and region."""
     print()
     print("━" * 60)
     print("🔐 AWS Access")
@@ -59,17 +105,42 @@ def _configure_aws() -> dict:
     print("  ASTRA needs read-only access to your AWS account.")
     print("  Required policies: SecurityAudit + ReadOnlyAccess")
     print()
+
+    # First, check if credentials already exist
+    try:
+        sts = boto3.client("sts")
+        identity = sts.get_caller_identity()
+        account_id = identity["Account"]
+        region = boto3.session.Session().region_name or "us-east-1"
+        print(f"  ✅ Credentials detected — account {account_id} (region: {region})")
+        print()
+        use_existing = _ask("  Use these credentials? [Y/n]", "Y")
+        if use_existing.lower() not in ("n", "no"):
+            return {"account_id": account_id, "region": region}
+    except Exception:
+        print("  ⚠️  No AWS credentials found.")
+        print()
+        help_choice = _ask("  Would you like setup instructions? [Y/n]", "Y")
+        if help_choice.lower() not in ("n", "no"):
+            _show_credential_help()
+
+    # Offer options
     print("  a) Use my current AWS credentials")
     print("     (from ~/.aws/credentials, env vars, or instance profile)")
     print()
     print("  b) Assume a cross-account role")
     print("     (you provide a role ARN — standard for external assessments)")
     print()
-    choice = _ask("Choose [a/b]", "a")
+    choice = _ask("  Choose [a/b]", "a")
 
     config = {}
 
     if choice.lower() == "b":
+        print()
+        print("  ── Cross-account role assumption ──")
+        print("  Your admin should create a role with:")
+        print("    • SecurityAudit + ReadOnlyAccess policies")
+        print("    • Trust policy allowing your account to assume it")
         print()
         role_arn = _ask("  Role ARN (arn:aws:iam::ACCOUNT:role/NAME)")
         external_id = _ask("  External ID (optional, press Enter to skip)")
@@ -77,7 +148,6 @@ def _configure_aws() -> dict:
         if external_id:
             config["external_id"] = external_id
 
-        # Assume the role
         print()
         print("  Assuming role...")
         try:
@@ -86,14 +156,17 @@ def _configure_aws() -> dict:
             if external_id:
                 params["ExternalId"] = external_id
             creds = sts.assume_role(**params)["Credentials"]
-            # Set environment variables for boto3
             os.environ["AWS_ACCESS_KEY_ID"] = creds["AccessKeyId"]
             os.environ["AWS_SECRET_ACCESS_KEY"] = creds["SecretAccessKey"]
             os.environ["AWS_SESSION_TOKEN"] = creds["SessionToken"]
             print("  ✅ Role assumed successfully")
         except Exception as e:
             print(f"  ❌ Failed to assume role: {e}")
-            print("  Please check the role ARN and permissions.")
+            print()
+            print("  Common fixes:")
+            print("  • Check the role ARN is correct")
+            print("  • Ensure the role's trust policy allows your account")
+            print("  • If using External ID, confirm it matches")
             sys.exit(1)
 
     # Verify access
@@ -108,7 +181,11 @@ def _configure_aws() -> dict:
         config["region"] = region
     except Exception as e:
         print(f"  ❌ Cannot connect to AWS: {e}")
-        print("  Please configure credentials: aws configure")
+        print()
+        print("  Troubleshooting:")
+        print("  • Run: aws sts get-caller-identity")
+        print("  • If that fails, your credentials are not configured")
+        print("  • Run: aws configure")
         sys.exit(1)
 
     return config
