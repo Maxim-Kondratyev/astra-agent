@@ -260,8 +260,8 @@ footer .guarantee {{ background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:
 <div class="container">
 <header>
     <h1>ASTRA Assessment Report</h1>
-    <div class="subtitle">Autonomous Security, Tenancy & Resilience Assessor</div>
-    <div class="subtitle" style="margin-top:0.5rem;">Account: {account_id} · {timestamp} · Modules: {', '.join(MODULE_NAMES.get(m, m) for m in modules_assessed)}</div>
+    <div class="subtitle" style="font-size:0.95rem;opacity:0.9;margin-bottom:0.6rem;">Autonomous assessment of your AWS environment against Well-Architected Framework best practices</div>
+    <div class="subtitle">Account: {account_id} · {timestamp} · Modules: {', '.join(MODULE_NAMES.get(m, m) for m in modules_assessed)}</div>
 </header>
 
 <div class="score-section">
