@@ -157,8 +157,19 @@ def generate_html_report(agent_output: str, account_id: str = "Unknown", mermaid
     # Top recommendations (from checklist reports)
     top_recs = data.get("top_recommendations", [])
     if top_recs:
-        recs_items = "".join(f"<li>{r}</li>" for r in top_recs)
-        top_recs_html = f'<div class="findings-section"><h2>🎯 Top Recommendations</h2><ol style="background:white;border-radius:12px;padding:1.5rem 1.5rem 1.5rem 2.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.08);font-size:0.9rem;line-height:2;">{recs_items}</ol></div>'
+        recs_items = ""
+        for i, r in enumerate(top_recs, 1):
+            if isinstance(r, dict):
+                recs_items += f'''<div style="background:white;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1px solid #f1f5f9;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;"><strong style="font-size:0.95rem;">{i}. {r.get("action","")}</strong><span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:6px;font-size:0.75rem;font-weight:600;">{r.get("score_improvement","")}</span></div>
+<p style="font-size:0.82rem;color:#475569;margin-bottom:0.4rem;"><strong>Why:</strong> {r.get("why","")}</p>
+<p style="font-size:0.82rem;color:#1e40af;"><strong>Impact:</strong> {r.get("impact","")}</p></div>'''
+            else:
+                recs_items += f"<li style='margin-bottom:0.5rem;'>{r}</li>"
+        if isinstance(top_recs[0], dict):
+            top_recs_html = f'<div class="findings-section"><h2>🎯 Top Recommendations</h2>{recs_items}</div>'
+        else:
+            top_recs_html = f'<div class="findings-section"><h2>🎯 Top Recommendations</h2><ol style="background:white;border-radius:12px;padding:1.5rem 1.5rem 1.5rem 2.5rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);font-size:0.9rem;line-height:2;border:1px solid #f1f5f9;">{recs_items}</ol></div>'
     else:
         top_recs_html = ""
 

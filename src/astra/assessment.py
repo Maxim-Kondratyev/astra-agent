@@ -68,11 +68,12 @@ Produce a JSON report with this exact structure:
     }}
   ],
   "top_recommendations": [
-    "<most impactful recommendation 1>",
-    "<most impactful recommendation 2>",
-    "<most impactful recommendation 3>",
-    "<most impactful recommendation 4>",
-    "<most impactful recommendation 5>"
+    {{
+      "action": "<specific remediation step>",
+      "why": "<why this matters — risk/business impact if not addressed>",
+      "impact": "<what improves once implemented — e.g. eliminates single point of failure>",
+      "score_improvement": "+<estimated points> to <module> score"
+    }}
   ]
 }}
 
