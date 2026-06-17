@@ -38,14 +38,28 @@ An autonomous AI agent that assesses AWS environments against the **Well-Archite
 git clone https://github.com/Maxim-Kondratyev/astra-agent.git
 cd astra-agent && pip install -e .
 
-# Run full assessment → HTML report
-astra --html report.html
+# Run (interactive guided mode — just type this, the agent guides you)
+astra
+```
 
-# Run + discuss findings interactively
-astra --chat
+That's it. The agent will:
+1. Ask what you want to assess
+2. Detect your AWS credentials (or guide you through setup)
+3. Optionally load your architecture docs
+4. Run all checks and generate a report
+5. Offer interactive chat to discuss findings
+
+**For automation (CI/CD or scripts):**
+
+```bash
+# Full assessment → HTML report
+astra --html report.html
 
 # Security only + customer context
 astra -m security -c ./my-docs/ --html report.html --chat
+
+# Quick check without LLM (free, fast, CI/CD friendly)
+astra --checks-only -m security -o results.json
 ```
 
 ### Prerequisites
@@ -55,6 +69,8 @@ astra -m security -c ./my-docs/ --html report.html --chat
    - `arn:aws:iam::aws:policy/SecurityAudit`
    - `arn:aws:iam::aws:policy/ReadOnlyAccess`
 3. **Amazon Bedrock** model access enabled (Claude Sonnet, region: us-east-1)
+
+> 💡 **Don't have credentials configured?** Just run `astra` — it will detect this and guide you through setup step by step with copy-paste commands.
 
 ---
 
