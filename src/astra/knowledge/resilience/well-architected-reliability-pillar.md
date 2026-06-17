@@ -14,6 +14,63 @@ function correctly and consistently when it's expected to.
 
 ---
 
+## Foundations (assessed when customer architecture docs are provided)
+
+### REL 1 — How do you manage service quotas and constraints?
+
+Understand your service quotas and account limits. Plan for growth and request
+increases proactively.
+
+Best practices:
+- REL01-BP01: Be aware of your service quotas and constraints
+- REL01-BP02: Manage quotas across accounts and regions
+- REL01-BP03: Accommodate fixed and rate-based quotas
+- REL01-BP04: Monitor and manage quotas
+- REL01-BP05: Automate quota management
+- REL01-BP06: Ensure sufficient gap between current quota usage and maximum quota
+
+### REL 2 — How do you plan your network topology?
+
+Plan network connectivity so workloads can communicate reliably and scale as needed.
+
+Best practices:
+- REL02-BP01: Use highly available network connectivity for your workload public endpoints
+- REL02-BP02: Provision redundant connectivity between private networks in the cloud and on-premises
+- REL02-BP03: Ensure IP subnet allocation accounts for expansion and availability
+- REL02-BP04: Prefer hub-and-spoke topologies over many-to-many mesh
+
+### REL 3 — How do you design your workload service architecture?
+
+Decompose workloads into smaller, loosely-coupled services that can fail independently.
+
+Best practices:
+- REL03-BP01: Choose how to segment your workload
+- REL03-BP02: Build services focused on specific business domains and functionality
+
+### REL 4 — How do you design interactions in a distributed system to prevent failures?
+
+Use patterns like timeouts, retries with backoff, circuit breakers, and idempotency.
+
+Best practices:
+- REL04-BP01: Identify which kind of distributed system is required
+- REL04-BP02: Implement loosely coupled dependencies
+- REL04-BP03: Make all responses idempotent
+- REL04-BP04: Do constant work (avoid bursts)
+
+### REL 5 — How do you design interactions in a distributed system to mitigate or withstand failures?
+
+Design for graceful degradation — the system should continue to function (even partially) when some components fail.
+
+Best practices:
+- REL05-BP01: Implement graceful degradation to transform applicable hard dependencies into soft dependencies
+- REL05-BP02: Throttle requests to prevent overloading
+- REL05-BP03: Control and limit retry calls
+- REL05-BP04: Fail fast and limit queues
+- REL05-BP05: Set client timeouts
+- REL05-BP06: Make services stateless where possible
+
+---
+
 ## Change Management
 
 ### REL 6 — How do you monitor workload resources?
