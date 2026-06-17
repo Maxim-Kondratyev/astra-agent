@@ -29,7 +29,7 @@ You are ASTRA — an AWS assessment expert. The customer has just received their
 """
 
 
-def start_chat(report: str, model_id: str = "us.anthropic.claude-sonnet-4-20250514", region: str = "us-east-1"):
+def start_chat(report: str, model_id: str = "us.anthropic.claude-opus-4-0", region: str = "us-east-1"):
     """Start an interactive chat session about assessment findings.
 
     Args:

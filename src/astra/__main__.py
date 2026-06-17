@@ -20,7 +20,7 @@ def main():
         prog="astra",
         description="ASTRA — Autonomous Security, Tenancy & Resilience Assessor",
     )
-    parser.add_argument("--model", default="us.anthropic.claude-sonnet-4-20250514", help="Bedrock model ID")
+    parser.add_argument("--model", default="us.anthropic.claude-opus-4-0", help="Bedrock model ID (default: Claude Opus 4 — most capable)")
     parser.add_argument("--region", default="us-east-1", help="AWS region for Bedrock")
     parser.add_argument("--module", "-m", choices=VALID_MODULES, action="append", help="Module(s) to assess (repeatable)")
     parser.add_argument("--output", "-o", help="Save JSON report to file")
