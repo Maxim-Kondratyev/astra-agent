@@ -105,8 +105,15 @@ def _configure_aws() -> dict:
     print("🔐 AWS Access")
     print("━" * 60)
     print()
-    print("  ASTRA needs read-only access to your AWS account.")
-    print("  Required policies: SecurityAudit + ReadOnlyAccess")
+    print("  ASTRA needs the following permissions:")
+    print()
+    print("  📖 Read-only (for infrastructure checks):")
+    print("     • SecurityAudit policy")
+    print("     • ReadOnlyAccess policy")
+    print()
+    print("  🧠 Bedrock (for AI report generation + chat):")
+    print("     • bedrock:InvokeModel on Anthropic models")
+    print("     • Enable Claude Fable 5 (or latest) in Bedrock Model Access")
     print()
 
     # First, check if credentials already exist
@@ -116,6 +123,7 @@ def _configure_aws() -> dict:
         account_id = identity["Account"]
         region = boto3.session.Session().region_name or "us-east-1"
         print(f"  ✅ Credentials detected — account {account_id} (region: {region})")
+        print("  ℹ️  Ensure bedrock:InvokeModel is allowed and Claude Fable 5 is enabled")
         print()
         use_existing = _ask("  Use these credentials? [Y/n]", "Y")
         if use_existing.lower() not in ("n", "no"):
