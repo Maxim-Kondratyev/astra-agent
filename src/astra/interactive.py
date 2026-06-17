@@ -225,7 +225,7 @@ def _confirm_and_run(modules: list[str], aws_config: dict, context_dir: str | No
     print()
 
     from astra.preflight import print_preflight_results, run_preflight
-    errors = run_preflight(region=aws_config.get("region", "us-east-1"))
+    errors = run_preflight(region=aws_config.get("region", "us-east-1"), checks_only=True)  # Skip Bedrock — model auto-resolved later
     if not print_preflight_results(errors):
         sys.exit(1)
 

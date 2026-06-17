@@ -47,9 +47,10 @@ def main():
         print("  Mode    : assessment → interactive chat")
     print("=" * 60 + "\n")
 
-    # Preflight checks
+    # Preflight checks (skip Bedrock check if model will be auto-resolved)
     from astra.preflight import print_preflight_results, run_preflight
-    errors = run_preflight(region=args.region, model_id=args.model or "us.anthropic.claude-fable-5-20250617", checks_only=args.checks_only)
+    preflight_model = args.model or "skip"
+    errors = run_preflight(region=args.region, model_id=preflight_model, checks_only=args.checks_only or (preflight_model == "skip"))
     if not print_preflight_results(errors):
         sys.exit(1)
 
@@ -60,6 +61,8 @@ def main():
             from astra.models import resolve_model
             model_id, model_msg = resolve_model(region=args.region)
             print(f"  🧠 {model_msg}\n")
+        else:
+            print(f"  🧠 Using specified model: {model_id}\n")
     else:
         model_id = model_id or "unused"
 
