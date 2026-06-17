@@ -21,7 +21,7 @@ class AstraStack(cdk.Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         # --- Parameters ---
-        model_id = cdk.CfnParameter(self, "ModelId", type="String", default="us.anthropic.claude-fable-5", description="Bedrock model/inference profile ID")
+        model_id = cdk.CfnParameter(self, "ModelId", type="String", default="us.anthropic.claude-opus-4-8", description="Bedrock model/inference profile ID")
 
         # --- VPC with private subnets (no internet) ---
         vpc = ec2.Vpc(self, "AstraVpc",

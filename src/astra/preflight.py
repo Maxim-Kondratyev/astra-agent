@@ -10,7 +10,7 @@ class PreflightError:
         self.fix = fix
 
 
-def run_preflight(region: str = "us-east-1", model_id: str = "us.anthropic.claude-fable-5", checks_only: bool = False) -> list[PreflightError]:
+def run_preflight(region: str = "us-east-1", model_id: str = "us.anthropic.claude-opus-4-8", checks_only: bool = False) -> list[PreflightError]:
     """Run preflight checks. Returns empty list if all good, or list of errors.
 
     Args:

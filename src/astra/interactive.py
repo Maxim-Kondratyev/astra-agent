@@ -276,6 +276,13 @@ def run_interactive():
     model_id, model_msg = resolve_model(region=aws_config.get("region", "us-east-1"))
     print(f"  🧠 {model_msg}\n")
 
+    if "No models accessible" in model_msg:
+        print("  Cannot proceed without a working Bedrock model.")
+        print("  Options:")
+        print("    1. Enable model access in Bedrock console")
+        print("    2. Run: astra --checks-only (no AI, but still gives results)")
+        sys.exit(1)
+
     # Run assessment
     from astra.assessment import run_assessment
     result = run_assessment(
