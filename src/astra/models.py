@@ -3,28 +3,31 @@
 import boto3
 
 # Ordered from most capable to least capable
+# Newer models require inference profiles (us. prefix)
 MODEL_PREFERENCE = [
-    "anthropic.claude-fable-5",
-    "anthropic.claude-opus-4-8",
-    "anthropic.claude-opus-4-7",
-    "anthropic.claude-opus-4-6-v1",
-    "anthropic.claude-sonnet-4-6",
-    "anthropic.claude-sonnet-4-5-20250929-v1:0",
-    "anthropic.claude-sonnet-4-20250514-v1:0",
-    "anthropic.claude-haiku-4-5-20251001-v1:0",
+    "us.anthropic.claude-fable-5",
+    "us.anthropic.claude-opus-4-8",
+    "us.anthropic.claude-opus-4-7",
+    "us.anthropic.claude-opus-4-6-v1",
+    "us.anthropic.claude-sonnet-4-6",
+    "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+    "us.anthropic.claude-sonnet-4-20250514-v1:0",
+    "us.anthropic.claude-haiku-4-5-20251001-v1:0",
     "anthropic.claude-3-5-haiku-20241022-v1:0",
+    "anthropic.claude-3-sonnet-20240229-v1:0",
 ]
 
 MODEL_NAMES = {
-    "anthropic.claude-fable-5": "Claude Fable 5 (latest)",
-    "anthropic.claude-opus-4-8": "Claude Opus 4.8",
-    "anthropic.claude-opus-4-7": "Claude Opus 4.7",
-    "anthropic.claude-opus-4-6-v1": "Claude Opus 4.6",
-    "anthropic.claude-sonnet-4-6": "Claude Sonnet 4.6",
-    "anthropic.claude-sonnet-4-5-20250929-v1:0": "Claude Sonnet 4.5",
-    "anthropic.claude-sonnet-4-20250514-v1:0": "Claude Sonnet 4",
-    "anthropic.claude-haiku-4-5-20251001-v1:0": "Claude Haiku 4.5",
+    "us.anthropic.claude-fable-5": "Claude Fable 5 (latest)",
+    "us.anthropic.claude-opus-4-8": "Claude Opus 4.8",
+    "us.anthropic.claude-opus-4-7": "Claude Opus 4.7",
+    "us.anthropic.claude-opus-4-6-v1": "Claude Opus 4.6",
+    "us.anthropic.claude-sonnet-4-6": "Claude Sonnet 4.6",
+    "us.anthropic.claude-sonnet-4-5-20250929-v1:0": "Claude Sonnet 4.5",
+    "us.anthropic.claude-sonnet-4-20250514-v1:0": "Claude Sonnet 4",
+    "us.anthropic.claude-haiku-4-5-20251001-v1:0": "Claude Haiku 4.5",
     "anthropic.claude-3-5-haiku-20241022-v1:0": "Claude 3.5 Haiku",
+    "anthropic.claude-3-sonnet-20240229-v1:0": "Claude 3 Sonnet",
 }
 
 

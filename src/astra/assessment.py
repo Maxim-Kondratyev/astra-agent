@@ -145,7 +145,7 @@ def run_checks(modules: list[str]) -> dict[str, list[CheckResult]]:
 
 def run_assessment(
     modules: list[str] | None = None,
-    model_id: str = "anthropic.claude-fable-5",
+    model_id: str = "us.anthropic.claude-fable-5",
     region: str = "us-east-1",
     account_id: str | None = None,
     context_dir: str | Path | None = None,
