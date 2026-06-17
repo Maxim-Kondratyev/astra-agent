@@ -76,9 +76,25 @@ python -m astra --context-dir ./customer-docs/ --html report.html
 | `--output FILE` | Raw JSON report |
 | `-m MODULE` | Module to assess (repeatable: `-m security -m resilience`) |
 | `-c DIR` | Customer context directory for tailored recommendations |
+| `--chat` | Interactive mode — discuss findings with the agent after assessment |
 | `--checks-only` | Run checks only — no LLM, no cost, CI/CD friendly (exits 1 if FAILs) |
 | `--model ID` | Bedrock model ID (default: Claude Sonnet 4) |
 | `--region` | AWS region for Bedrock API calls |
+
+### Interactive Chat
+
+After the assessment runs, drop into a conversation with the agent about your findings:
+
+```bash
+astra -m security --chat
+```
+
+Example questions:
+- "Why did SEC-08 fail?"
+- "How do I fix the security groups issue? Give me CLI commands."
+- "What should I prioritize first?"
+- "Generate a CloudFormation snippet to enable Multi-AZ on my RDS"
+- "Write a Jira ticket for the top 3 findings"
 
 ### CI/CD Integration
 

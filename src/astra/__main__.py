@@ -21,7 +21,8 @@ def main():
     parser.add_argument("--html", help="Save HTML report to file")
     parser.add_argument("--account-id", default=None, help="AWS account ID (auto-detected if omitted)")
     parser.add_argument("--context-dir", "-c", help="Customer architecture docs folder")
-    parser.add_argument("--checks-only", action="store_true", help="Run checks only — no LLM, no cost (useful for CI/CD)")
+    parser.add_argument("--checks-only", action="store_true", help="Run checks only — no LLM, no cost (CI/CD)")
+    parser.add_argument("--chat", action="store_true", help="Interactive mode — discuss findings after assessment")
     args = parser.parse_args()
 
     modules = ["security", "resilience", "saas"] if (not args.module or "all" in args.module) else list(dict.fromkeys(args.module))
@@ -36,6 +37,8 @@ def main():
         print(f"  Context : {args.context_dir}")
     if args.checks_only:
         print("  Mode    : checks-only (no LLM)")
+    if args.chat:
+        print("  Mode    : assessment → interactive chat")
     print("=" * 60 + "\n")
 
     result = run_assessment(
@@ -60,10 +63,15 @@ def main():
             f.write(html)
         print(f"✅ HTML report → {args.html}")
 
-    if not args.output and not args.html:
+    if not args.output and not args.html and not args.chat:
         print("\n" + report)
 
-    # Exit code for CI/CD: non-zero if any FAIL
+    # Interactive chat mode
+    if args.chat and not args.checks_only:
+        from astra.chat import start_chat
+        start_chat(report=report, model_id=args.model, region=args.region)
+
+    # Exit code for CI/CD
     if args.checks_only:
         failed = sum(1 for r in result["raw_results"] if r.get("status") == "FAIL")
         if failed:
