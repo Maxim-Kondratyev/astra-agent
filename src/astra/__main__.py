@@ -10,6 +10,12 @@ VALID_MODULES = ("security", "resilience", "saas", "all")
 
 
 def main():
+    # If no arguments provided, launch interactive guided flow
+    if len(sys.argv) == 1:
+        from astra.interactive import run_interactive
+        run_interactive()
+        return
+
     parser = argparse.ArgumentParser(
         prog="astra",
         description="ASTRA — Autonomous Security, Tenancy & Resilience Assessor",
