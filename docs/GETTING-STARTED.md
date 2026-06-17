@@ -62,26 +62,48 @@ You should see:
 
 ## Step 2: Required IAM Permissions
 
-Your IAM user or role needs these two AWS-managed policies:
+Your IAM user or role needs these policies:
 
 | Policy | What It Allows |
 |--------|---------------|
 | `SecurityAudit` | Read security configurations (GuardDuty, Security Hub, IAM) |
 | `ReadOnlyAccess` | Read all other resources (EC2, RDS, S3, Lambda, etc.) |
+| Bedrock invoke (inline) | Call Claude model for report generation and chat |
 
 ### How to attach (if you have IAM admin access):
 
 ```bash
 # Replace YOUR_USER_NAME with your IAM user name
+
+# Read-only policies
 aws iam attach-user-policy --user-name YOUR_USER_NAME \
   --policy-arn arn:aws:iam::aws:policy/SecurityAudit
 
 aws iam attach-user-policy --user-name YOUR_USER_NAME \
   --policy-arn arn:aws:iam::aws:policy/ReadOnlyAccess
+
+# Bedrock invoke permission (for AI report generation)
+aws iam put-user-policy --user-name YOUR_USER_NAME \
+  --policy-name BedrockInvoke \
+  --policy-document '{
+    "Version": "2012-10-17",
+    "Statement": [{
+      "Effect": "Allow",
+      "Action": ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
+      "Resource": "arn:aws:bedrock:*::foundation-model/anthropic.*"
+    }]
+  }'
 ```
 
 ### Or ask your admin to:
-> "Please attach `SecurityAudit` and `ReadOnlyAccess` managed policies to my IAM user/role. ASTRA only needs read access — it never modifies anything."
+> "Please attach `SecurityAudit` and `ReadOnlyAccess` managed policies, plus `bedrock:InvokeModel` permission for Anthropic models. ASTRA only reads infrastructure and calls Bedrock for AI analysis — it never modifies any resources."
+
+### Why Bedrock access?
+ASTRA is **read-only for your infrastructure** — it never creates, modifies, or deletes any AWS resource. However, it calls Amazon Bedrock (Claude) to:
+- Generate the scored assessment report
+- Power the interactive chat about findings
+
+If you don't want to grant Bedrock access, use `astra --checks-only` for raw results without AI analysis.
 
 ---
 

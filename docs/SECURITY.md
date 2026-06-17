@@ -66,6 +66,13 @@ Every check uses `boto3.client("<service>")` with read-only API calls (`describe
 - ❌ Read Secrets Manager secret values
 - ❌ Access any customer application data
 
+## What ASTRA Does (the one non-read action)
+
+- ✅ Calls **Amazon Bedrock** (`bedrock:InvokeModel`) to generate the assessment report and power interactive chat
+- This sends check results (resource IDs, configuration status) to Claude for analysis
+- Data stays within your AWS region (Bedrock is a regional service)
+- You can skip this entirely with `--checks-only` (zero Bedrock calls)
+
 ## Verifying Security
 
 Before deploying, you can:
