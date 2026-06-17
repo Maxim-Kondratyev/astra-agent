@@ -83,7 +83,7 @@ def _normalize_checklist_to_findings(data: dict) -> dict:
     return data
 
 
-def generate_html_report(agent_output: str, account_id: str = "Unknown") -> str:
+def generate_html_report(agent_output: str, account_id: str = "Unknown", mermaid_diagram: str | None = None) -> str:
     """Generate a styled HTML report from the agent's JSON assessment output."""
     data = extract_json_from_output(agent_output)
     if not data:
@@ -164,6 +164,17 @@ def generate_html_report(agent_output: str, account_id: str = "Unknown") -> str:
 
     # Checklist summary table
     checks = data.get("checks", [])
+
+    # Architecture diagram (Mermaid)
+    if mermaid_diagram:
+        diagram_html = f'''<div class="findings-section"><h2>🗺️ Infrastructure Architecture</h2>
+<div style="background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.08);overflow-x:auto;">
+<pre class="mermaid">{mermaid_diagram}</pre>
+</div>
+<p style="font-size:0.7rem;color:#94a3b8;margin-top:0.5rem;">⚠️ indicates a finding from the assessment. Diagram shows resources discovered during read-only scan.</p>
+</div>'''
+    else:
+        diagram_html = ""
     if checks:
         rows = ""
         for c in checks:
@@ -226,6 +237,8 @@ header .subtitle {{ opacity:0.7; font-size:0.85rem; }}
 footer {{ text-align:center; font-size:0.75rem; color:#94a3b8; padding:2rem 1rem 1rem; }}
 footer .guarantee {{ background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:0.7rem 1rem; margin-bottom:1rem; color:#166534; font-size:0.8rem; }}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>mermaid.initialize({{startOnLoad:true, theme:'neutral', securityLevel:'loose'}});</script>
 </head>
 <body>
 <div class="container">
@@ -249,6 +262,8 @@ footer .guarantee {{ background:#f0fdf4; border:1px solid #bbf7d0; border-radius
 <div class="modules-grid">
 {module_cards_html}
 </div>
+
+{diagram_html}
 
 {checklist_table_html}
 

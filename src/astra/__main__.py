@@ -58,7 +58,7 @@ def main():
         print(f"\n✅ JSON report → {args.output}")
 
     if args.html and not args.checks_only:
-        html = generate_html_report(report, account_id=result["account_id"])
+        html = generate_html_report(report, account_id=result["account_id"], mermaid_diagram=result.get("mermaid_diagram"))
         with open(args.html, "w") as f:
             f.write(html)
         print(f"✅ HTML report → {args.html}")
