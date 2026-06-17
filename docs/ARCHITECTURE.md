@@ -168,7 +168,23 @@ Transforms LLM JSON output → styled HTML:
 
 After assessment, creates a new Strands agent with the full report as system context. Enables multi-turn conversation about findings, remediation steps, and priority planning.
 
-### 7. CDK Infrastructure (`infra/`)
+### 7. Interactive Onboarding (`src/astra/interactive.py`)
+
+Guided wizard when user runs `astra` with no flags. Walks through module selection, credential setup, context upload, preflight checks, and model resolution.
+
+### 8. Model Resolution (`src/astra/models.py`)
+
+Tries Bedrock models from most capable to least capable using the Converse API. Returns the best available model without blocking. Recommends upgrading if using a fallback.
+
+### 9. Preflight Checks (`src/astra/preflight.py`)
+
+Validates credentials and read permissions before running the assessment. Provides clear fix instructions if anything is missing.
+
+### 10. Infrastructure Discovery (`src/astra/discovery.py`) + Diagram (`src/astra/diagram.py`)
+
+Scans VPCs, subnets, AZs, EC2, RDS, ELBs, Lambda, S3, Route53 and generates a Mermaid architecture diagram with finding annotations (⚠️ on failed resources).
+
+### 11. CDK Infrastructure (`infra/`)
 
 One-command deployment for automated recurring assessments:
 - **Lambda** (15min timeout, 1GB memory) — runs the assessment

@@ -304,18 +304,24 @@ astra-agent/
 │   ├── __main__.py          # CLI (argument parsing, output routing)
 │   ├── assessment.py        # Runner (concurrent checks → context → LLM)
 │   ├── chat.py              # Interactive chat (multi-turn conversation)
+│   ├── interactive.py       # Guided onboarding wizard
+│   ├── models.py            # Auto-detect best available Bedrock model
+│   ├── preflight.py         # Pre-run validation (creds, permissions)
+│   ├── discovery.py         # Infrastructure topology scanner
+│   ├── diagram.py           # Mermaid architecture diagram generator
 │   ├── checklist/
 │   │   ├── __init__.py      # CheckResult, Status (shared types)
 │   │   ├── security.py      # 12 Security Pillar checks
 │   │   ├── resilience.py    # 12 Reliability Pillar checks
 │   │   └── saas.py          # 10 SaaS Lens checks
 │   ├── report/
-│   │   └── generator.py     # JSON → styled HTML
+│   │   └── generator.py     # JSON → styled HTML report
 │   └── knowledge/           # WA best practice reference (LLM context)
 ├── infra/                   # CDK stack (Lambda + VPC + IAM + S3)
-├── docs/                    # DEPLOYMENT, SECURITY, MODULES, ARCHITECTURE
+├── docs/                    # GETTING-STARTED, DEPLOYMENT, SECURITY, MODULES, ARCHITECTURE
 ├── examples/
 │   └── customer-context/    # Sample architecture doc template
+├── tests/                   # 65 tests (moto-mocked AWS)
 ├── specs/                   # Original requirements & design
 └── pyproject.toml           # Python package config
 ```
