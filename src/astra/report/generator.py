@@ -195,7 +195,7 @@ def generate_html_report(agent_output: str, account_id: str = "Unknown", mermaid
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ASTRA Assessment — {account_id}</title>
+<title>ASTRA Report — Account {account_id} — {timestamp}</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 * {{ margin:0; padding:0; box-sizing:border-box; }}
@@ -248,7 +248,8 @@ footer .guarantee {{ background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:
 <div class="container">
 <header>
     <h1>ASTRA Assessment Report</h1>
-    <div class="subtitle">Account: {account_id} · {timestamp} · Modules: {', '.join(MODULE_NAMES.get(m, m) for m in modules_assessed)}</div>
+    <div class="subtitle">Autonomous Security, Tenancy & Resilience Assessor</div>
+    <div class="subtitle" style="margin-top:0.5rem;">Account: {account_id} · {timestamp} · Modules: {', '.join(MODULE_NAMES.get(m, m) for m in modules_assessed)}</div>
 </header>
 
 <div class="score-section">
