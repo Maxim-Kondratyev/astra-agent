@@ -1,167 +1,187 @@
-# AWS Well-Architected Framework — Security Pillar Best Practices
+# AWS Well-Architected Framework — Security Pillar
 
-Source: AWS Well-Architected Framework, Security Pillar Whitepaper (November 2024)
+Source: https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/welcome.html
 
-## Design Principles
+The Security pillar encompasses the ability to protect data, systems, and assets
+to take advantage of cloud technologies to improve your security.
 
-1. **Implement a strong identity foundation**: Implement least privilege, enforce separation of duties with appropriate authorization. Centralize identity management. Eliminate long-term static credentials.
-2. **Maintain traceability**: Monitor, alert, and audit actions in real time. Integrate log and metric collection with automated investigation and response.
-3. **Apply security at all layers**: Defence in depth — edge, VPC, load balancing, instance, OS, application, code.
-4. **Automate security best practices**: Version-controlled, code-defined security controls. Scale securely and cost-effectively.
-5. **Protect data in transit and at rest**: Classify data by sensitivity. Use encryption, tokenization, and access control.
-6. **Keep people away from data**: Reduce direct access and manual processing. Minimize mishandling risk.
-7. **Prepare for security events**: Incident management policies, simulations, automated detection/investigation/recovery.
+## Best Practice Areas
 
-## Security Areas
+1. Security Foundations (SEC 1)
+2. Identity and Access Management (SEC 2–3)
+3. Detection (SEC 4)
+4. Infrastructure Protection (SEC 5–6)
+5. Data Protection (SEC 7–8)
+6. Incident Response (SEC 10)
+7. Application Security (SEC 11)
 
-### 1. Security Foundations (SEC 1)
+---
 
-**Question: How do you securely operate your workload?**
+## Security Foundations
 
-Best Practices:
-- Separate workloads using accounts (AWS Organizations)
-- Secure AWS account root user (MFA, no routine use)
-- Keep AWS account contacts up to date
-- Use AWS service capabilities to reduce blast radius
-- Enable detective controls at organizational level
+### SEC 1 — How do you securely operate your workload?
 
-### 2. Identity and Access Management (SEC 2-3)
+Operate workloads securely by using AWS Organizations, multi-account strategy,
+and establishing security governance.
 
-**SEC 2: How do you manage authentication for people and machines?**
+Best practices:
+- SEC01-BP01: Separate workloads using accounts
+- SEC01-BP02: Secure AWS account root user and properties
+- SEC01-BP03: Identify and validate control objectives
+- SEC01-BP04: Stay up to date with security threats and recommendations
+- SEC01-BP05: Reduce security management scope (use managed services)
+- SEC01-BP06: Automate testing and validation of security controls in pipelines
+- SEC01-BP07: Identify threats and prioritize mitigations using a threat model
+- SEC01-BP08: Evaluate and implement new security services and features regularly
 
-Best Practices:
-- Use strong sign-in mechanisms (MFA required)
-- Use temporary credentials (IAM roles, STS)
-- Store and use secrets securely (Secrets Manager)
-- Rely on a centralized identity provider (IdP)
-- Audit and rotate credentials regularly
-- Leverage user groups and attributes for access at scale
+---
 
-**SEC 3: How do you manage permissions for people and machines?**
+## Identity and Access Management
 
-Best Practices:
-- Define access requirements (who needs what)
-- Grant least privilege access
-- Establish emergency access process
-- Reduce permissions continuously (IAM Access Analyzer)
-- Define permission guardrails for your organization (SCPs)
-- Manage access based on lifecycle (JML processes)
-- Analyze public and cross-account access
-- Share resources securely (RAM, bucket policies)
+### SEC 2 — How do you manage identities for people and machines?
 
-### 3. Detection (SEC 4)
+Establish and manage identities with defined lifecycle (creation, use, deactivation).
 
-**SEC 4: How do you detect and investigate security events?**
+Best practices:
+- SEC02-BP01: Use strong sign-in mechanisms (MFA, password policies)
+- SEC02-BP02: Use temporary credentials (roles, not long-lived keys)
+- SEC02-BP03: Store and use secrets securely (Secrets Manager, rotation)
+- SEC02-BP04: Rely on a centralized identity provider (IAM Identity Center, SSO)
+- SEC02-BP05: Audit and rotate credentials regularly
+- SEC02-BP06: Leverage user groups and attributes for access at scale
 
-Best Practices:
-- Configure service and application logging (CloudTrail, VPC Flow Logs, DNS logs)
-- Analyse logs, findings, and metrics centrally (Security Lake, Security Hub)
-- Automate response to events (EventBridge rules, Lambda)
-- Implement actionable security events (GuardDuty, Inspector)
-- Enable AWS security services in all accounts and regions
+### SEC 3 — How do you manage permissions for people and machines?
 
-Key Services:
-- AWS CloudTrail (API audit)
-- Amazon GuardDuty (threat detection)
-- AWS Security Hub (aggregated findings)
-- Amazon Inspector (vulnerability management)
-- AWS Config (configuration compliance)
-- Amazon Macie (sensitive data discovery)
+Grant least-privilege access, establish guardrails, and reduce permissions continuously.
 
-### 4. Infrastructure Protection (SEC 5-6)
+Best practices:
+- SEC03-BP01: Define access requirements
+- SEC03-BP02: Grant least privilege access
+- SEC03-BP03: Establish emergency access process
+- SEC03-BP04: Reduce permissions continuously (Access Analyzer)
+- SEC03-BP05: Define permission guardrails for your organization (SCPs)
+- SEC03-BP06: Manage access based on lifecycle (joiners/movers/leavers)
+- SEC03-BP07: Analyze public and cross-account access
+- SEC03-BP08: Share resources securely within your organization
 
-**SEC 5: How do you protect your network resources?**
+---
 
-Best Practices:
-- Create network layers (public, private, sensitive subnets)
-- Control traffic at all layers (security groups, NACLs, WAF)
-- Automate network protection (GuardDuty, Network Firewall)
-- Implement inspection and protection (VPC Flow Logs, Traffic Mirroring)
-- No direct internet access to resources not requiring it
+## Detection
 
-**SEC 6: How do you protect your compute resources?**
+### SEC 4 — How do you detect and investigate security events?
 
-Best Practices:
-- Perform vulnerability management (patch, scan, Inspector)
-- Reduce attack surface (minimal packages, disable unnecessary services)
-- Implement managed services (Lambda, Fargate — reduced OS management)
-- Automate compute protection (AMI pipelines, SSM Patch Manager)
-- Validate software integrity (code signing, SBOM)
+Capture, centralize, and analyse logs. Automate alerting and response.
 
-### 5. Data Protection (SEC 7-9)
+Best practices:
+- SEC04-BP01: Configure service and application logging (CloudTrail, VPC Flow Logs)
+- SEC04-BP02: Analyse logs, findings, and metrics centrally (Security Hub)
+- SEC04-BP03: Automate response to events (EventBridge + Lambda)
+- SEC04-BP04: Implement actionable security events (GuardDuty, detective controls)
 
-**SEC 7: How do you classify your data?**
+---
 
-Best Practices:
-- Identify the data in your workload (sensitivity levels)
-- Define data protection controls (encryption, access policies)
-- Define data lifecycle management
-- Automate identification and classification (Macie)
+## Infrastructure Protection
 
-**SEC 8: How do you protect your data at rest?**
+### SEC 5 — How do you protect your network resources?
 
-Best Practices:
-- Implement secure key management (KMS, key rotation)
-- Enforce encryption at rest (S3 SSE, EBS encryption, RDS encryption)
-- Automate data at rest protection
-- Enforce access control (bucket policies, resource policies)
-- Use mechanisms to keep people away from data
+Apply defence in depth at network layer.
 
-**SEC 9: How do you protect your data in transit?**
+Best practices:
+- SEC05-BP01: Create network layers (public/private subnets)
+- SEC05-BP02: Control traffic at all layers (security groups, NACLs, WAF)
+- SEC05-BP03: Automate network protection (AWS Network Firewall, Shield)
+- SEC05-BP04: Implement inspection and protection (flow logs, traffic mirroring)
 
-Best Practices:
-- Implement secure key and certificate management (ACM)
-- Enforce encryption in transit (TLS 1.2+, HTTPS only)
-- Automate detection of unintended data access
-- Authenticate network communications (mTLS, VPN)
+### SEC 6 — How do you protect your compute resources?
 
-### 6. Incident Response (SEC 10)
+Reduce attack surface of compute, manage vulnerabilities, automate patching.
 
-**SEC 10: How do you anticipate, respond to, and recover from incidents?**
+Best practices:
+- SEC06-BP01: Perform vulnerability management
+- SEC06-BP02: Reduce attack surface (remove unnecessary packages, ports)
+- SEC06-BP03: Implement managed services (Lambda, Fargate reduce OS management)
+- SEC06-BP04: Automate compute protection (Inspector, SSM Patch Manager)
+- SEC06-BP05: Validate software integrity (code signing, verified images)
 
-Best Practices:
-- Identify key personnel and external resources
-- Develop incident management plans (runbooks)
-- Prepare forensic capabilities
-- Automate containment capability
-- Pre-provision access for incident responders
-- Pre-deploy tools (forensic AMIs, log analysis)
-- Run game days (simulate incidents)
+---
 
-### 7. Application Security (SEC 11)
+## Data Protection
 
-**SEC 11: How do you incorporate and validate the security properties of applications throughout the design, development, and deployment lifecycle?**
+### SEC 7 — How do you protect your data at rest?
 
-Best Practices:
-- Train for application security (secure coding)
-- Automate testing throughout development lifecycle (SAST, DAST)
-- Perform regular penetration testing
-- Conduct manual code reviews for critical logic
-- Centralize services for packages and dependencies (prevent supply chain attacks)
-- Deploy software programmatically (no human access to production)
-- Regularly assess security properties of pipelines
+Encrypt data at rest, manage keys, and control access to data.
 
-## Critical Security Controls Checklist
+Best practices:
+- SEC07-BP01: Understand your data classification and protection requirements
+- SEC07-BP02: Apply data protection controls based on data sensitivity
+- SEC07-BP03: Automate data at rest protection (default encryption)
+- SEC07-BP04: Enforce access control (S3 policies, KMS key policies)
+- SEC07-BP05: Use mechanisms to keep people away from data (no direct access)
 
-| # | Control | Priority |
-|---|---------|----------|
-| 1 | Root account MFA enabled | CRITICAL |
-| 2 | No root account access keys | CRITICAL |
-| 3 | All IAM users have MFA | HIGH |
-| 4 | No long-term access keys (use roles) | HIGH |
-| 5 | CloudTrail enabled in all regions | HIGH |
-| 6 | GuardDuty enabled | HIGH |
-| 7 | Security Hub enabled with standards | HIGH |
-| 8 | S3 Block Public Access (account level) | HIGH |
-| 9 | EBS default encryption enabled | MEDIUM |
-| 10 | VPC Flow Logs enabled | MEDIUM |
-| 11 | AWS Config enabled | MEDIUM |
-| 12 | Secrets Manager for credentials | MEDIUM |
-| 13 | Inspector enabled for vulnerability scanning | MEDIUM |
-| 14 | No security groups with 0.0.0.0/0 on SSH/RDP | HIGH |
-| 15 | IAM password policy (14+ chars, complexity) | MEDIUM |
-| 16 | SCPs for guardrails in multi-account | HIGH |
-| 17 | Encryption in transit (TLS 1.2+) | MEDIUM |
-| 18 | VPC endpoints for AWS service access | MEDIUM |
-| 19 | WAF for public-facing applications | MEDIUM |
-| 20 | Regular access reviews (IAM Access Analyzer) | MEDIUM |
+### SEC 8 — How do you protect your data in transit?
+
+Encrypt data in transit with TLS. Authenticate network communications.
+
+Best practices:
+- SEC08-BP01: Implement secure key and certificate management (ACM)
+- SEC08-BP02: Enforce encryption in transit (TLS 1.2+, HTTPS only)
+- SEC08-BP03: Automate detection of unencrypted data in transit
+- SEC08-BP04: Authenticate network communications (mutual TLS, VPN)
+
+---
+
+## Incident Response
+
+### SEC 10 — How do you anticipate, respond to, and recover from incidents?
+
+Prepare for incidents, simulate events, automate containment, and learn.
+
+Best practices:
+- SEC10-BP01: Identify key personnel and external resources
+- SEC10-BP02: Develop incident management plans
+- SEC10-BP03: Prepare forensic capabilities
+- SEC10-BP04: Develop and test security incident response playbooks
+- SEC10-BP05: Pre-provision access for incident response
+- SEC10-BP06: Pre-deploy tools for incident response
+- SEC10-BP07: Run simulations regularly (game days)
+
+---
+
+## Application Security
+
+### SEC 11 — How do you incorporate and validate security throughout the lifecycle?
+
+Shift security left — integrate into design, development, and deployment.
+
+Best practices:
+- SEC11-BP01: Train for application security
+- SEC11-BP02: Automate testing throughout the development lifecycle
+- SEC11-BP03: Perform regular penetration testing
+- SEC11-BP04: Manual code reviews for critical paths
+- SEC11-BP05: Centralize services for packages and dependencies
+- SEC11-BP06: Deploy software programmatically (no manual deployments)
+- SEC11-BP07: Regularly assess the security properties of pipelines
+
+---
+
+## ASTRA Check Coverage
+
+| Check | SEC Question | Automated? |
+|-------|-------------|------------|
+| SEC-01 Security Hub | SEC 4 (Detection) | ✅ Yes |
+| SEC-02 GuardDuty | SEC 4 (Detection) | ✅ Yes |
+| SEC-03 Root MFA | SEC 1 (Foundations) | ✅ Yes |
+| SEC-04 Password Policy | SEC 2 (Identity) | ✅ Yes |
+| SEC-05 S3 Public Block | SEC 7 (Data at Rest) | ✅ Yes |
+| SEC-06 CloudTrail | SEC 4 (Detection) | ✅ Yes |
+| SEC-07 VPC Flow Logs | SEC 4 (Detection) | ✅ Yes |
+| SEC-08 Security Groups | SEC 5 (Network) | ✅ Yes |
+| SEC-09 Access Analyzer | SEC 3 (Permissions) | ✅ Yes |
+| SEC-10 EBS Encryption | SEC 7 (Data at Rest) | ✅ Yes |
+| SEC-11 Secrets Rotation | SEC 2 (Identity) | ✅ Yes |
+| SEC-12 KMS Key Rotation | SEC 7 (Data at Rest) | ✅ Yes |
+| SEC 1 (Governance) | Design decisions | With customer docs |
+| SEC 6 (Compute) | Vulnerability mgmt | With customer docs |
+| SEC 8 (Data in Transit) | TLS config | With customer docs |
+| SEC 10 (Incident Response) | Playbooks, readiness | With customer docs |
+| SEC 11 (App Security) | SDLC practices | With customer docs |
