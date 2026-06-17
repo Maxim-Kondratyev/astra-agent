@@ -163,7 +163,8 @@ def generate_html_report(agent_output: str, account_id: str = "Unknown", mermaid
                 recs_items += f'''<div style="background:white;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1rem;box-shadow:0 2px 8px rgba(0,0,0,0.05);border:1px solid #f1f5f9;">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;"><strong style="font-size:0.95rem;">{i}. {r.get("action","")}</strong><span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:6px;font-size:0.75rem;font-weight:600;">{r.get("score_improvement","")}</span></div>
 <p style="font-size:0.82rem;color:#475569;margin-bottom:0.4rem;"><strong>Why:</strong> {r.get("why","")}</p>
-<p style="font-size:0.82rem;color:#1e40af;"><strong>Impact:</strong> {r.get("impact","")}</p></div>'''
+<p style="font-size:0.82rem;color:#991b1b;background:#fef2f2;padding:0.5rem 0.8rem;border-radius:6px;border:1px solid #fecaca;margin-bottom:0.4rem;"><strong>⚠️ Risk if not addressed:</strong> {r.get("risk_if_ignored","")}</p>
+<p style="font-size:0.82rem;color:#1e40af;"><strong>Impact once fixed:</strong> {r.get("impact","")}</p></div>'''
             else:
                 recs_items += f"<li style='margin-bottom:0.5rem;'>{r}</li>"
         if isinstance(top_recs[0], dict):
@@ -275,6 +276,8 @@ footer .guarantee {{ background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:
     </div>
 </div>
 
+{top_recs_html}
+
 <div class="modules-grid">
 {module_cards_html}
 </div>
@@ -287,8 +290,6 @@ footer .guarantee {{ background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:
     <h2>Findings ({len(findings)})</h2>
     {findings_html}
 </div>
-
-{top_recs_html}
 
 <footer>
     <div class="guarantee">🔒 This assessment was performed using <strong>read-only access</strong>. No resources were created, modified, or deleted.</div>

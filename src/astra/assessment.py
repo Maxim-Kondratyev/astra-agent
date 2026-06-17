@@ -71,6 +71,7 @@ Produce a JSON report with this exact structure:
     {{
       "action": "<specific remediation step>",
       "why": "<why this matters — risk/business impact if not addressed>",
+      "risk_if_ignored": "<concrete consequence — e.g. 'Full account compromise possible within hours of credential leak'>",
       "impact": "<what improves once implemented — e.g. eliminates single point of failure>",
       "score_improvement": "+<estimated points> to <module> score"
     }}
