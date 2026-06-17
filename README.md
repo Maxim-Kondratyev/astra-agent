@@ -65,8 +65,6 @@ It was built for teams that:
 - Number of chat questions asked
 - Model used (Opus 4.8 costs more than Sonnet 4, but produces better analysis)
 
-**Cost comparison:** A manual Well-Architected Review engagement costs $5,000–$20,000. ASTRA costs $0.10 per run.
-
 ---
 
 ## What ASTRA Does
