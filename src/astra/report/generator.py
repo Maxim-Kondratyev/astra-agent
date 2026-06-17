@@ -197,45 +197,49 @@ def generate_html_report(agent_output: str, account_id: str = "Unknown", mermaid
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ASTRA Assessment — {account_id}</title>
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 * {{ margin:0; padding:0; box-sizing:border-box; }}
-body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#f8fafc; color:#1e293b; line-height:1.6; }}
-.container {{ max-width:1000px; margin:0 auto; padding:2rem; }}
-header {{ background:linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); color:white; padding:2.5rem; border-radius:16px; margin-bottom:2rem; }}
-header h1 {{ font-size:2rem; margin-bottom:0.3rem; }}
-header .subtitle {{ opacity:0.7; font-size:0.85rem; }}
-.score-section {{ display:flex; gap:2rem; align-items:center; background:white; border-radius:16px; padding:2rem; margin-bottom:2rem; box-shadow:0 1px 4px rgba(0,0,0,0.08); }}
-.score-circle {{ width:120px; height:120px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-weight:700; flex-shrink:0; }}
-.score-circle .number {{ font-size:2.5rem; line-height:1; }}
-.score-circle .label {{ font-size:0.7rem; text-transform:uppercase; opacity:0.9; }}
+body {{ font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background:#f8fafc; color:#1e293b; line-height:1.7; font-size:15px; }}
+.container {{ max-width:1040px; margin:0 auto; padding:2.5rem 2rem; }}
+header {{ background:linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f4c81 100%); color:white; padding:3rem; border-radius:20px; margin-bottom:2.5rem; box-shadow:0 10px 40px rgba(15,23,42,0.3); }}
+header h1 {{ font-size:2.2rem; margin-bottom:0.4rem; font-weight:700; letter-spacing:-0.02em; }}
+header .subtitle {{ opacity:0.75; font-size:0.85rem; letter-spacing:0.01em; }}
+.score-section {{ display:flex; gap:2.5rem; align-items:center; background:white; border-radius:20px; padding:2.5rem; margin-bottom:2.5rem; box-shadow:0 2px 12px rgba(0,0,0,0.06); border:1px solid #e2e8f0; }}
+.score-circle {{ width:130px; height:130px; border-radius:50%; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-weight:700; flex-shrink:0; box-shadow:0 6px 20px rgba(0,0,0,0.15); }}
+.score-circle .number {{ font-size:2.8rem; line-height:1; }}
+.score-circle .label {{ font-size:0.7rem; text-transform:uppercase; opacity:0.9; margin-top:2px; }}
 .score-info {{ flex:1; }}
-.score-info h2 {{ font-size:1.2rem; margin-bottom:0.5rem; }}
-.score-info .summary {{ color:#475569; font-size:0.9rem; }}
-.severity-bar {{ margin-top:0.8rem; font-size:0.8rem; }}
-.modules-grid {{ display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:1.5rem; margin-bottom:2rem; }}
-.module-card {{ background:white; border-radius:12px; padding:1.5rem; box-shadow:0 1px 4px rgba(0,0,0,0.08); }}
-.module-header {{ display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem; padding-bottom:0.8rem; border-bottom:1px solid #e2e8f0; }}
-.module-icon {{ font-size:1.3rem; }}
-.module-name {{ flex:1; font-weight:600; }}
-.module-score {{ font-size:1.3rem; font-weight:700; }}
-.cat-row {{ display:flex; align-items:center; gap:0.6rem; margin-bottom:0.5rem; }}
-.cat-label {{ width:140px; font-size:0.75rem; color:#64748b; }}
-.bar-bg {{ flex:1; height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden; }}
-.bar-fill {{ height:100%; border-radius:4px; }}
-.cat-score {{ width:24px; text-align:right; font-weight:600; font-size:0.75rem; }}
-.findings-section h2 {{ font-size:1.2rem; margin-bottom:1rem; }}
-.finding {{ background:white; border-radius:10px; padding:1.2rem 1.5rem; margin-bottom:1rem; box-shadow:0 1px 3px rgba(0,0,0,0.06); }}
-.finding-header {{ display:flex; gap:0.5rem; align-items:center; margin-bottom:0.5rem; flex-wrap:wrap; }}
-.severity {{ color:white; padding:2px 8px; border-radius:4px; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.03em; }}
-.category {{ font-size:0.7rem; color:#64748b; background:#f1f5f9; padding:2px 8px; border-radius:4px; }}
-.module-badge {{ font-size:0.7rem; color:#64748b; background:#f1f5f9; padding:2px 8px; border-radius:4px; }}
-.finding h3 {{ font-size:0.9rem; margin-bottom:0.4rem; color:#1e293b; }}
-.finding p {{ font-size:0.82rem; color:#475569; margin-bottom:0.5rem; }}
-.resources {{ font-size:0.75rem; margin-bottom:0.3rem; color:#334155; }}
-.resources code {{ font-size:0.7rem; background:#f1f5f9; padding:1px 4px; border-radius:3px; word-break:break-all; }}
-.recommendation {{ font-size:0.8rem; margin-bottom:0.3rem; color:#1e40af; background:#eff6ff; padding:0.5rem 0.7rem; border-radius:6px; margin-top:0.5rem; }}
-.reference {{ font-size:0.7rem; color:#94a3b8; margin-top:0.3rem; }}
-footer {{ text-align:center; font-size:0.75rem; color:#94a3b8; padding:2rem 1rem 1rem; }}
-footer .guarantee {{ background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:0.7rem 1rem; margin-bottom:1rem; color:#166534; font-size:0.8rem; }}
+.score-info h2 {{ font-size:1.3rem; margin-bottom:0.5rem; font-weight:600; }}
+.score-info .summary {{ color:#475569; font-size:0.9rem; line-height:1.7; }}
+.severity-bar {{ margin-top:1rem; font-size:0.8rem; }}
+.modules-grid {{ display:grid; grid-template-columns:repeat(auto-fit, minmax(290px, 1fr)); gap:1.5rem; margin-bottom:2.5rem; }}
+.module-card {{ background:white; border-radius:16px; padding:1.8rem; box-shadow:0 2px 12px rgba(0,0,0,0.06); border:1px solid #e2e8f0; transition:transform 0.2s,box-shadow 0.2s; }}
+.module-card:hover {{ transform:translateY(-2px); box-shadow:0 8px 25px rgba(0,0,0,0.1); }}
+.module-header {{ display:flex; align-items:center; gap:0.6rem; margin-bottom:1.2rem; padding-bottom:1rem; border-bottom:1px solid #f1f5f9; }}
+.module-icon {{ font-size:1.4rem; }}
+.module-name {{ flex:1; font-weight:600; font-size:1.05rem; }}
+.module-score {{ font-size:1.4rem; font-weight:700; }}
+.cat-row {{ display:flex; align-items:center; gap:0.6rem; margin-bottom:0.6rem; }}
+.cat-label {{ width:140px; font-size:0.75rem; color:#64748b; font-weight:500; }}
+.bar-bg {{ flex:1; height:10px; background:#f1f5f9; border-radius:5px; overflow:hidden; }}
+.bar-fill {{ height:100%; border-radius:5px; transition:width 0.6s ease; }}
+.cat-score {{ width:28px; text-align:right; font-weight:600; font-size:0.8rem; }}
+.findings-section {{ margin-bottom:2.5rem; }}
+.findings-section h2 {{ font-size:1.3rem; margin-bottom:1.2rem; font-weight:600; }}
+.finding {{ background:white; border-radius:14px; padding:1.5rem 1.8rem; margin-bottom:1.2rem; box-shadow:0 2px 8px rgba(0,0,0,0.05); border:1px solid #f1f5f9; }}
+.finding-header {{ display:flex; gap:0.5rem; align-items:center; margin-bottom:0.6rem; flex-wrap:wrap; }}
+.severity {{ color:white; padding:3px 10px; border-radius:6px; font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; }}
+.category {{ font-size:0.7rem; color:#64748b; background:#f1f5f9; padding:3px 10px; border-radius:6px; }}
+.module-badge {{ font-size:0.7rem; color:#64748b; background:#f1f5f9; padding:3px 10px; border-radius:6px; }}
+.finding h3 {{ font-size:0.95rem; margin-bottom:0.4rem; color:#1e293b; font-weight:600; }}
+.finding p {{ font-size:0.85rem; color:#475569; margin-bottom:0.5rem; }}
+.resources {{ font-size:0.78rem; margin-bottom:0.4rem; color:#334155; }}
+.resources code {{ font-size:0.72rem; background:#f1f5f9; padding:2px 6px; border-radius:4px; word-break:break-all; font-family:'SF Mono',Menlo,monospace; }}
+.recommendation {{ font-size:0.82rem; color:#1e40af; background:linear-gradient(135deg,#eff6ff,#dbeafe); padding:0.7rem 1rem; border-radius:8px; margin-top:0.6rem; border:1px solid #bfdbfe; }}
+.reference {{ font-size:0.72rem; color:#94a3b8; margin-top:0.4rem; }}
+footer {{ text-align:center; font-size:0.75rem; color:#94a3b8; padding:3rem 1rem 1.5rem; }}
+footer .guarantee {{ background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:1px solid #bbf7d0; border-radius:12px; padding:1rem 1.5rem; margin-bottom:1.5rem; color:#166534; font-size:0.82rem; font-weight:500; }}
+@media print {{ body {{ background:white; }} .container {{ padding:0; }} .module-card:hover {{ transform:none; }} .finding {{ break-inside:avoid; }} }}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
 <script>mermaid.initialize({{startOnLoad:true, theme:'neutral', securityLevel:'loose'}});</script>
