@@ -237,10 +237,15 @@ mkdir customer-docs/
 #   architecture.md     — system overview, component diagram
 #   requirements.txt    — RTO/RPO, SLA targets
 #   network.yaml        — VPC layout, connectivity
-#   security-policy.md  — compliance requirements
+#   security-policy.pdf — compliance requirements
+#   design.docx         — design documents
 
 astra -c ./customer-docs/ --html report.html
 ```
+
+**Supported formats:** `.md`, `.txt`, `.yaml`, `.yml`, `.json`, `.csv`, `.toml`, `.ini`, `.cfg`, `.pdf`*, `.docx`*
+
+*\*PDF and DOCX require: `pip install 'astra-agent[docs]'`*
 
 The agent will then:
 - Compare **documented architecture** vs **actual deployed state**
@@ -361,7 +366,7 @@ Deploys Lambda + IAM + private VPC + S3 + weekly EventBridge schedule. See [Depl
 | Execution (checks) | 10-20s (concurrent) |
 | Execution (report) | 15-30s (LLM) |
 | Total time | < 60 seconds |
-| Cost per run | ~$0.04 (Bedrock) |
+| Cost per run | ~$0.05–0.10 (Bedrock) |
 | `--checks-only` | 10-20s, $0.00 |
 
 ---
