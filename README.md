@@ -1,6 +1,6 @@
 # ASTRA — Autonomous Security, Tenancy & Resilience Assessor
 
-An autonomous AI agent that assesses AWS environments against the **Well-Architected Framework** using read-only access. Runs 34 prebuilt checks, produces scored reports with actionable recommendations, and lets you chat with the agent to explore findings in depth.
+An autonomous AI agent that assesses AWS environments against the **Well-Architected Framework** using read-only access. Runs 34 automated infrastructure checks and — when architecture documentation is provided — covers the full Well-Architected Framework (Security, Reliability, and SaaS pillars). Produces scored reports with actionable recommendations and lets you chat with the agent to explore findings in depth.
 
 ---
 
@@ -85,7 +85,7 @@ It was built for teams that:
 
 | Capability | Description |
 |-----------|-------------|
-| **Assess** | 34 checks across Security, Resilience, and SaaS architecture |
+| **Assess** | 34 automated checks + full WA Framework coverage with architecture docs |
 | **Score** | 0–100 per module, with risk level (CRITICAL/HIGH/MEDIUM/LOW) |
 | **Recommend** | Top 5 prioritised actions with WA Framework references |
 | **Contextualise** | Upload your architecture docs — agent compares intent vs reality |
