@@ -97,7 +97,7 @@ def generate_mermaid_diagram(infra: dict, check_results: list[CheckResult] | Non
             # Mermaid requires at least one node in a subgraph
             if not has_content:
                 placeholder = f"empty_{vi}_{az_short.replace('-','')}"
-                lines.append(f"            {placeholder}[subnet]:::az")
+                lines.append(f"            {placeholder}[subnet]")
 
             lines.append("        end")
 
@@ -120,7 +120,7 @@ def generate_mermaid_diagram(infra: dict, check_results: list[CheckResult] | Non
     # Lambda
     lambda_count = infra.get("lambda_functions", 0)
     if lambda_count > 0:
-        lines.append(f"    Lambda[\"⚡ Lambda<br/>{lambda_count} function(s)\"]:::serverless")
+        lines.append(f"    Lambda[\"Lambda — {lambda_count} function(s)\"]:::serverless")
         if lbs:
             lines.append("    LB0 -.-> Lambda")
         lines.append("")
@@ -128,8 +128,7 @@ def generate_mermaid_diagram(infra: dict, check_results: list[CheckResult] | Non
     # S3
     buckets = infra.get("s3_buckets", [])
     if buckets:
-        bucket_label = f"🪣 S3<br/>{len(buckets)} bucket(s)"
-        lines.append(f"    S3[({bucket_label})]:::storage")
+        lines.append(f"    S3[\"S3 — {len(buckets)} bucket(s)\"]:::storage")
         lines.append("")
 
     return "\n".join(lines)
