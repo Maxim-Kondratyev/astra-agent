@@ -214,6 +214,10 @@ def _configure_context() -> str | None:
     print("  • RTO/RPO requirements, SLA definitions")
     print("  • Security policies, network topology (.yaml, .json, .csv)")
     print()
+    print("  💡 Tip: Save internal wiki pages locally before running:")
+    print("     curl https://your-wiki.com/architecture > docs/architecture.md")
+    print("     Or: browser → File → Save As → into your docs folder")
+    print()
     path = _ask("Path to docs folder (Enter to skip)")
     if path and Path(path).exists():
         files = list(Path(path).glob("*.*"))

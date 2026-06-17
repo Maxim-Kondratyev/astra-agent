@@ -247,6 +247,15 @@ astra -c ./customer-docs/ --html report.html
 
 *\*PDF and DOCX require: `pip install 'astra-agent[docs]'`*
 
+**💡 Tip:** Have docs in a wiki or website? Save them locally first:
+```bash
+# From internal wiki/Confluence/SharePoint
+curl https://your-wiki.com/architecture > customer-docs/architecture.md
+
+# Or from browser: File → Save As → into your docs folder
+```
+This keeps the assessment fully offline — no internet access needed, no data leaves your machine.
+
 The agent will then:
 - Compare **documented architecture** vs **actual deployed state**
 - Validate stated RTO/RPO against backup/failover configuration
