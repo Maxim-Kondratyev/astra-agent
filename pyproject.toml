@@ -1,6 +1,6 @@
 [project]
 name = "astra-agent"
-version = "0.2.0"
+version = "1.0.0"
 description = "Autonomous Security, Tenancy & Resilience Assessor — AI agent for AWS environment assessment"
 requires-python = ">=3.11"
 dependencies = [

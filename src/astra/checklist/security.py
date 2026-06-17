@@ -180,7 +180,7 @@ def check_iam_access_analyzer() -> CheckResult:
     """SEC-09: IAM Access Analyzer should be enabled to detect external access."""
     client = boto3.client("accessanalyzer")
     try:
-        analyzers = client.list_analyzers(Type="ACCOUNT").get("analyzers", [])
+        analyzers = client.list_analyzers(type="ACCOUNT").get("analyzers", [])
         if not analyzers:
             return CheckResult("SEC-09", "IAM Access Analyzer", Status.FAIL,
                              recommendation="Enable IAM Access Analyzer to detect resources shared with external entities.",
