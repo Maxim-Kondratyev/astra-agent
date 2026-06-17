@@ -85,7 +85,7 @@ ASTRA separates **data collection** (deterministic, auditable) from **analysis**
                                    ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                                                                               │
-│  PHASE 3: AI ANALYSIS (Claude Sonnet via Amazon Bedrock)                      │
+│  PHASE 3: AI ANALYSIS (Claude (latest available) via Amazon Bedrock)                      │
 │  ═══════════════════════════════════════════════════════                       │
 │                                                                               │
 │  ┌─────────────────────────────────────────────────────────────────────────┐ │

@@ -68,7 +68,7 @@ astra --checks-only -m security -o results.json
 2. **AWS credentials** with read-only access:
    - `arn:aws:iam::aws:policy/SecurityAudit`
    - `arn:aws:iam::aws:policy/ReadOnlyAccess`
-3. **Amazon Bedrock** model access enabled (Claude Sonnet, region: us-east-1)
+3. **Amazon Bedrock** model access enabled (Claude Fable 5 or latest available, region: us-east-1)
 
 > 💡 **Don't have credentials configured?** Just run `astra` — it will detect this and guide you through setup step by step with copy-paste commands.
 
@@ -184,7 +184,7 @@ astra [OPTIONS]
 | `-o FILE` | Output raw JSON report |
 | `--chat` | Interactive chat after assessment |
 | `--checks-only` | No LLM — raw check results only (CI/CD) |
-| `--model ID` | Bedrock model (default: Claude Sonnet 4) |
+| `--model ID` | Bedrock model (default: auto-detects best available) |
 | `--region` | AWS region for Bedrock (default: us-east-1) |
 | `--account-id` | Override account ID (auto-detected) |
 
@@ -232,7 +232,7 @@ Deploys Lambda + IAM + private VPC + S3 + weekly EventBridge schedule. See [Depl
 │  │  └────────────────────────┬────────────────────────────────────────┘  │   │
 │  │                           │                                           │   │
 │  │  ┌────────────────────────▼────────────────────────────────────────┐  │   │
-│  │  │  Phase 3: AI ANALYSIS (Claude Sonnet via Bedrock)                │  │   │
+│  │  │  Phase 3: AI ANALYSIS (Claude via Bedrock)                │  │   │
 │  │  │  → Scores, executive summary, prioritised recommendations       │  │   │
 │  │  └────────────────────────┬────────────────────────────────────────┘  │   │
 │  │                           │                                           │   │
@@ -252,7 +252,7 @@ Deploys Lambda + IAM + private VPC + S3 + weekly EventBridge schedule. See [Depl
 │                                                                             │
 │  ┌─────────────────────────────────────────────────────────────────────┐   │
 │  │  Amazon Bedrock (via VPC endpoint — no internet)                     │   │
-│  │  Claude Sonnet → report generation + chat                            │   │
+│  │  Claude (best available) → report generation + chat                            │   │
 │  └─────────────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
@@ -325,7 +325,7 @@ astra-agent/
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
 | Agent Framework | [Strands Agents SDK](https://github.com/strands-agents/sdk-python) | LLM orchestration + multi-turn chat |
-| Foundation Model | Claude Sonnet (Amazon Bedrock) | Report synthesis + interactive Q&A |
+| Foundation Model | Claude (Amazon Bedrock) — auto-detects best available | Report synthesis + interactive Q&A |
 | Infrastructure | AWS CDK (Python) | One-command customer deployment |
 | Checks | boto3 | Read-only AWS API calls |
 | Concurrency | ThreadPoolExecutor | 3 modules in parallel |

@@ -109,13 +109,13 @@ If you don't want to grant Bedrock access, use `astra --checks-only` for raw res
 
 ## Step 3: Enable Bedrock Model Access (for AI reports)
 
-ASTRA uses Claude Sonnet to generate the analysis report. This is optional — you can run `--checks-only` without it.
+ASTRA uses Claude (latest available, e.g. Fable 5) to generate the analysis report. This is optional — you can run `--checks-only` without it.
 
 ### How to enable:
 
 1. Go to **AWS Console** → **Amazon Bedrock** → **Model access** (region: us-east-1)
 2. Click **Manage model access**
-3. Enable **Claude 3.5 Sonnet** (or Anthropic Claude models)
+3. Enable **Claude Fable 5** (or any Anthropic Claude model)
 4. Click **Save changes**
 
 > ⏭️ **Skip this step?** Use `astra --checks-only` to get results without AI analysis (free, instant).

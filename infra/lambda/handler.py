@@ -12,7 +12,7 @@ def handler(event, context):
     from astra.assessment import run_assessment
     from astra.report.generator import generate_html_report
 
-    model_id = os.environ.get("BEDROCK_MODEL_ID", "us.anthropic.claude-sonnet-4-20250514")
+    model_id = os.environ.get("BEDROCK_MODEL_ID", "anthropic.claude-fable-5")
     region = os.environ.get("BEDROCK_REGION", "us-east-1")
     bucket = os.environ["REPORTS_BUCKET"]
     modules = event.get("modules", ["security", "resilience", "saas"])
