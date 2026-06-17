@@ -47,24 +47,18 @@ def main():
         print("  Mode    : assessment → interactive chat")
     print("=" * 60 + "\n")
 
-    # Preflight checks (skip Bedrock check if model will be auto-resolved)
+    # Preflight checks (credentials + read access only)
     from astra.preflight import print_preflight_results, run_preflight
-    preflight_model = args.model or "skip"
-    errors = run_preflight(region=args.region, model_id=preflight_model, checks_only=args.checks_only or (preflight_model == "skip"))
+    errors = run_preflight(region=args.region, checks_only=True)
     if not print_preflight_results(errors):
         sys.exit(1)
 
-    # Resolve best available model
-    model_id = args.model
+    # Resolve model (always auto-detect, even if --model is passed — use it as preference)
+    model_id = "unused"
     if not args.checks_only:
-        if not model_id:
-            from astra.models import resolve_model
-            model_id, model_msg = resolve_model(region=args.region)
-            print(f"  🧠 {model_msg}\n")
-        else:
-            print(f"  🧠 Using specified model: {model_id}\n")
-    else:
-        model_id = model_id or "unused"
+        from astra.models import resolve_model
+        model_id, model_msg = resolve_model(region=args.region, preferred=args.model)
+        print(f"  🧠 {model_msg}\n")
 
     result = run_assessment(
         modules=modules,
