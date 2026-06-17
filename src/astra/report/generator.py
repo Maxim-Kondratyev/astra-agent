@@ -276,11 +276,11 @@ footer .guarantee {{ background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:
     </div>
 </div>
 
-{top_recs_html}
-
 <div class="modules-grid">
 {module_cards_html}
 </div>
+
+{top_recs_html}
 
 {diagram_html}
 
