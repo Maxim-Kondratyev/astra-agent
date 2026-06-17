@@ -99,16 +99,16 @@ It was built for teams that:
 Here's what the assessment report looks like *(click to enlarge)*:
 
 <p>
-<a href="docs/screenshots/1.png"><img src="docs/screenshots/1.png" width="400"/></a>
-<a href="docs/screenshots/2.png"><img src="docs/screenshots/2.png" width="400"/></a>
+<a href="docs/screenshots/1.png"><img src="docs/screenshots/1.png" width="280"/></a>
+<a href="docs/screenshots/2.png"><img src="docs/screenshots/2.png" width="280"/></a>
 </p>
 <p>
-<a href="docs/screenshots/3.png"><img src="docs/screenshots/3.png" width="400"/></a>
-<a href="docs/screenshots/4.png"><img src="docs/screenshots/4.png" width="400"/></a>
+<a href="docs/screenshots/3.png"><img src="docs/screenshots/3.png" width="280"/></a>
+<a href="docs/screenshots/4.png"><img src="docs/screenshots/4.png" width="280"/></a>
 </p>
 <p>
-<a href="docs/screenshots/5.png"><img src="docs/screenshots/5.png" width="400"/></a>
-<a href="docs/screenshots/6.png"><img src="docs/screenshots/6.png" width="400"/></a>
+<a href="docs/screenshots/5.png"><img src="docs/screenshots/5.png" width="280"/></a>
+<a href="docs/screenshots/6.png"><img src="docs/screenshots/6.png" width="280"/></a>
 </p>
 
 ---
