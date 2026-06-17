@@ -20,7 +20,7 @@ def main():
         prog="astra",
         description="ASTRA — Autonomous Security, Tenancy & Resilience Assessor",
     )
-    parser.add_argument("--model", default="us.anthropic.claude-opus-4-0", help="Bedrock model ID (default: Claude Opus 4 — most capable)")
+    parser.add_argument("--model", default=None, help="Bedrock model ID (default: auto-detect best available)")
     parser.add_argument("--region", default="us-east-1", help="AWS region for Bedrock")
     parser.add_argument("--module", "-m", choices=VALID_MODULES, action="append", help="Module(s) to assess (repeatable)")
     parser.add_argument("--output", "-o", help="Save JSON report to file")
@@ -49,13 +49,23 @@ def main():
 
     # Preflight checks
     from astra.preflight import print_preflight_results, run_preflight
-    errors = run_preflight(region=args.region, model_id=args.model, checks_only=args.checks_only)
+    errors = run_preflight(region=args.region, model_id=args.model or "us.anthropic.claude-fable-5-20250617", checks_only=args.checks_only)
     if not print_preflight_results(errors):
         sys.exit(1)
 
+    # Resolve best available model
+    model_id = args.model
+    if not args.checks_only:
+        if not model_id:
+            from astra.models import resolve_model
+            model_id, model_msg = resolve_model(region=args.region)
+            print(f"  🧠 {model_msg}\n")
+    else:
+        model_id = model_id or "unused"
+
     result = run_assessment(
         modules=modules,
-        model_id=args.model,
+        model_id=model_id,
         region=args.region,
         account_id=args.account_id,
         context_dir=args.context_dir,

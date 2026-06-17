@@ -259,11 +259,17 @@ def run_interactive():
     context_dir = _configure_context()
     config = _confirm_and_run(modules, aws_config, context_dir)
 
-    # Run assessment
+    # Resolve best model
     print()
+    from astra.models import resolve_model
+    model_id, model_msg = resolve_model(region=aws_config.get("region", "us-east-1"))
+    print(f"  🧠 {model_msg}\n")
+
+    # Run assessment
     from astra.assessment import run_assessment
     result = run_assessment(
         modules=config["modules"],
+        model_id=model_id,
         account_id=config["account_id"],
         context_dir=config["context_dir"],
     )
