@@ -177,13 +177,13 @@ def generate_html_report(agent_output: str, account_id: str = "Unknown", mermaid
     # Checklist summary table
     checks = data.get("checks", [])
 
-    # Architecture diagram (Mermaid)
+    # Architecture diagram (HTML)
     if mermaid_diagram:
         diagram_html = f'''<div class="findings-section"><h2>🗺️ Infrastructure Architecture</h2>
-<div style="background:white;border-radius:12px;padding:1.5rem;box-shadow:0 1px 4px rgba(0,0,0,0.08);overflow-x:auto;">
-<pre class="mermaid">{mermaid_diagram}</pre>
+<div style="background:white;border-radius:12px;padding:1.5rem;box-shadow:0 2px 12px rgba(0,0,0,0.06);border:1px solid #e2e8f0;">
+{mermaid_diagram}
 </div>
-<p style="font-size:0.7rem;color:#94a3b8;margin-top:0.5rem;">⚠️ indicates a finding from the assessment. Diagram shows resources discovered during read-only scan.</p>
+<p style="font-size:0.7rem;color:#94a3b8;margin-top:0.5rem;">⚠️ indicates a finding. Diagram shows resources discovered during read-only scan.</p>
 </div>'''
     else:
         diagram_html = ""
@@ -253,8 +253,6 @@ footer {{ text-align:center; font-size:0.75rem; color:#94a3b8; padding:3rem 1rem
 footer .guarantee {{ background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:1px solid #bbf7d0; border-radius:12px; padding:1rem 1.5rem; margin-bottom:1.5rem; color:#166534; font-size:0.82rem; font-weight:500; }}
 @media print {{ body {{ background:white; }} .container {{ padding:0; }} .module-card:hover {{ transform:none; }} .finding {{ break-inside:avoid; }} }}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
-<script>mermaid.initialize({{startOnLoad:true, theme:'neutral', securityLevel:'loose'}});</script>
 </head>
 <body>
 <div class="container">

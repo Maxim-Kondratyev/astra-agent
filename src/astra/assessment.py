@@ -199,7 +199,7 @@ def run_assessment(
 
     # Checks-only mode: return raw results as JSON, no LLM call
     if checks_only:
-        from astra.diagram import generate_mermaid_diagram
+        from astra.diagram import generate_html_diagram
         return {
             "account_id": account_id,
             "modules": modules,
@@ -215,7 +215,7 @@ def run_assessment(
             }, indent=2, default=str),
             "context_provided": False,
             "elapsed_seconds": checks_time,
-            "mermaid_diagram": generate_mermaid_diagram(infra, all_results),
+            "mermaid_diagram": generate_html_diagram(infra, all_results),
         }
 
     # Phase 2: Load context
@@ -229,7 +229,7 @@ def run_assessment(
     # Phase 3: LLM report
     t1 = time.time()
     print("📝 Generating report (LLM)...")
-    from astra.diagram import generate_mermaid_diagram
+    from astra.diagram import generate_html_diagram
     prompt = _REPORT_PROMPT.format(
         account_id=account_id,
         modules_str=", ".join(modules),
@@ -254,5 +254,5 @@ def run_assessment(
         "report": str(response),
         "context_provided": bool(customer_context),
         "elapsed_seconds": total_time,
-        "mermaid_diagram": generate_mermaid_diagram(infra, all_results),
+        "mermaid_diagram": generate_html_diagram(infra, all_results),
     }
