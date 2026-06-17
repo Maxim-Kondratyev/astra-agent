@@ -40,7 +40,7 @@ It was built for teams that:
 | What ASTRA Cannot Do | Why |
 |---------------------|-----|
 | **Modify your resources** | Read-only by design — security guarantee |
-| **Replace a full WA Review** | Covers 34 automated checks, not the full 58-question WA review |
+| **Replace a full WA Review** | 34 automated checks + AI analysis of your docs covers most questions, but not facilitated team discussions |
 | **Assess application logic** | Checks infrastructure configuration, not your code |
 | **Scan all regions** | Runs in one region per execution (default: us-east-1) |
 | **Remember past assessments** | Each run is independent — no trend tracking yet |
