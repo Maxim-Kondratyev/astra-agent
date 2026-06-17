@@ -432,3 +432,15 @@ astra-agent/
 | Checks | boto3 | Read-only AWS API calls |
 | Concurrency | ThreadPoolExecutor | 3 modules in parallel |
 | Report | HTML + inline CSS | Zero-dependency visual output |
+
+---
+
+## Disclaimer
+
+ASTRA is an AI-powered assessment tool. While it uses deterministic checks and official AWS Well-Architected Framework guidance, please note:
+
+- **AI-generated analysis may contain errors.** The scored report, recommendations, and chat responses are produced by a large language model and should be reviewed by qualified professionals before acting on them.
+- **Not a substitute for professional advice.** ASTRA does not replace security audits, compliance assessments, or professional consulting engagements.
+- **Use at your own risk.** The authors accept no liability for decisions made based on ASTRA's output.
+- **Verify before acting.** Always validate findings against your specific context, business requirements, and risk tolerance before implementing changes.
+- **Human oversight required.** This tool is designed to assist, not replace, human judgment.
