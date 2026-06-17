@@ -4,6 +4,71 @@ An autonomous AI agent that assesses AWS environments against the **Well-Archite
 
 ---
 
+## Purpose
+
+ASTRA exists to answer one question: **"How well-architected is my AWS environment?"**
+
+It was built for teams that:
+- Don't have time for lengthy manual reviews or workshops
+- Want a clear benchmark of where they stand
+- Need prioritised actions with minimal effort on their side
+- Require a repeatable, auditable assessment they can run on schedule
+
+**The pitch:** Grant read-only access, type `astra`, receive a comprehensive assessment. No meetings, no consultants, no disruption.
+
+---
+
+## Capabilities
+
+| What ASTRA Can Do | How |
+|-------------------|-----|
+| **Assess security posture** | 12 checks: MFA, encryption, network exposure, logging, access control |
+| **Evaluate resilience** | 12 checks: Multi-AZ, backups, failover, single points of failure |
+| **Audit SaaS architecture** | 10 checks: tenant isolation, cost allocation, noisy neighbour |
+| **Score your environment** | 0–100 per module with CRITICAL/HIGH/MEDIUM/LOW risk levels |
+| **Discover infrastructure** | Scans VPCs, subnets, instances, databases, load balancers, Lambda, S3 |
+| **Generate architecture diagrams** | Visual Mermaid diagram with findings annotated |
+| **Produce executive reports** | HTML with scores, checklist table, detailed findings, top recommendations |
+| **Tailor recommendations** | Upload your architecture docs — agent compares intent vs reality |
+| **Answer follow-up questions** | Interactive chat: "How do I fix SEC-08?" → gets CLI commands, IaC snippets |
+| **Run without AI (free)** | `--checks-only` mode for CI/CD pipelines, zero Bedrock cost |
+| **Guide non-technical users** | Interactive wizard walks through setup step by step |
+| **Auto-detect best model** | Tries Claude Opus 4.8, falls back gracefully if unavailable |
+
+## Limitations
+
+| What ASTRA Cannot Do | Why |
+|---------------------|-----|
+| **Modify your resources** | Read-only by design — security guarantee |
+| **Replace a full WA Review** | Covers 34 automated checks, not the full 58-question WA review |
+| **Assess application logic** | Checks infrastructure configuration, not your code |
+| **Scan all regions** | Runs in one region per execution (default: us-east-1) |
+| **Remember past assessments** | Each run is independent — no trend tracking yet |
+| **Work without Bedrock** | Report generation needs Bedrock (`--checks-only` works without it) |
+| **Assess non-AWS environments** | AWS only |
+
+---
+
+## Cost Per Assessment
+
+| Component | Cost | Details |
+|-----------|------|---------|
+| **AWS API calls** (checks) | $0.00 | Read-only API calls — no charge |
+| **Bedrock — report generation** | ~$0.03–0.08 | One LLM call with ~4K input + ~4K output tokens |
+| **Bedrock — chat (per question)** | ~$0.01–0.03 | Per follow-up question |
+| **`--checks-only` mode** | $0.00 | No Bedrock call at all |
+| **Total (typical full run)** | **< $0.10** | 34 checks + report + 2-3 chat questions |
+
+**What affects cost:**
+- Number of modules assessed (more modules = more findings = larger prompt)
+- Amount of customer context loaded (more docs = more input tokens)
+- Number of chat questions asked
+- Model used (Opus 4.8 costs more than Sonnet 4, but produces better analysis)
+
+**Cost comparison:** A manual Well-Architected Review engagement costs $5,000–$20,000. ASTRA costs $0.10 per run.
+
+---
+
 ## What ASTRA Does
 
 ```

@@ -1,5 +1,18 @@
 # Getting Started with ASTRA
 
+## TL;DR
+
+```bash
+pip install -e .    # Install
+astra               # Run (guides you through everything)
+```
+
+ASTRA needs: **Python 3.11+** · **AWS read-only credentials** · **Bedrock model access (Opus 4.8)**
+
+Takes 5 minutes to set up, 60 seconds to run, costs < $0.10 per assessment.
+
+---
+
 This guide covers everything you need before running your first assessment.
 
 ---
