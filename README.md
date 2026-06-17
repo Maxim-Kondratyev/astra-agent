@@ -98,25 +98,20 @@ It was built for teams that:
 
 ## Report Preview
 
-Here's what the assessment report looks like:
+Here's what the assessment report looks like *(click to enlarge)*:
 
-### Score & Executive Summary
-![Header and Score](docs/screenshots/01-header-score.png)
-
-### Module Scores
-![Module Breakdown](docs/screenshots/02-modules.png)
-
-### Top Recommendations (with risk if not addressed)
-![Recommendations](docs/screenshots/03-recommendations.png)
-
-### Infrastructure Architecture
-![Infrastructure](docs/screenshots/04-infrastructure.png)
-
-### Checklist Summary
-![Checklist](docs/screenshots/05-checklist.png)
-
-### Detailed Findings
-![Findings](docs/screenshots/06-findings.png)
+<p>
+<a href="docs/screenshots/1.png"><img src="docs/screenshots/1.png" width="400"/></a>
+<a href="docs/screenshots/2.png"><img src="docs/screenshots/2.png" width="400"/></a>
+</p>
+<p>
+<a href="docs/screenshots/3.png"><img src="docs/screenshots/3.png" width="400"/></a>
+<a href="docs/screenshots/4.png"><img src="docs/screenshots/4.png" width="400"/></a>
+</p>
+<p>
+<a href="docs/screenshots/5.png"><img src="docs/screenshots/5.png" width="400"/></a>
+<a href="docs/screenshots/6.png"><img src="docs/screenshots/6.png" width="400"/></a>
+</p>
 
 ---
 
