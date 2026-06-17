@@ -226,6 +226,6 @@ One-command deployment for automated recurring assessments:
 |-------|----------|------|-----------|
 | Phase 1: Checks | 10-20s | $0 (API calls only) | No |
 | Phase 2: Context | <1s | $0 (file reads) | No |
-| Phase 3: LLM | 15-30s | ~$0.03-0.05 | Yes (`--checks-only`) |
+| Phase 3: LLM | 15-30s | ~$0.03–0.08 | Yes (`--checks-only`) |
 | Chat (per question) | 3-10s | ~$0.01-0.02 | Yes (optional) |
 | **Total** | **<60s** | **<$0.10** | — |

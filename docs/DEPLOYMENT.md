@@ -6,7 +6,7 @@ ASTRA assesses your AWS account using **read-only access** and produces a report
 
 | Method | Best For | Time | Cost |
 |--------|----------|------|------|
-| **Local (CLI)** | Quick one-off assessment | 5 min setup | ~$0.05 per run (Bedrock) |
+| **Local (CLI)** | Quick one-off assessment | 5 min setup | ~$0.05–0.10 per run (Bedrock) |
 | **CDK (automated)** | Recurring weekly assessments | 15 min setup | ~$5/month |
 
 ---

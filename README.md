@@ -57,7 +57,7 @@ It was built for teams that:
 | **Bedrock — report generation** | ~$0.03–0.08 | One LLM call with ~4K input + ~4K output tokens |
 | **Bedrock — chat (per question)** | ~$0.01–0.03 | Per follow-up question |
 | **`--checks-only` mode** | $0.00 | No Bedrock call at all |
-| **Total (typical full run)** | **< $0.10** | 34 checks + report + 2-3 chat questions |
+| **Total (typical full run)** | **~$0.05–0.10** | 34 checks + report (+ chat if used) |
 
 **What affects cost:**
 - Number of modules assessed (more modules = more findings = larger prompt)
