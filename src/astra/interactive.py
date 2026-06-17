@@ -113,7 +113,7 @@ def _configure_aws() -> dict:
     print()
     print("  🧠 Bedrock (for AI report generation + chat):")
     print("     • bedrock:InvokeModel on Anthropic models")
-    print("     • Enable Claude Fable 5 (or latest) in Bedrock Model Access")
+    print("     • Enable Anthropic Claude models (e.g. Opus 4.8) in Bedrock Model Access")
     print()
 
     # First, check if credentials already exist
@@ -123,7 +123,7 @@ def _configure_aws() -> dict:
         account_id = identity["Account"]
         region = boto3.session.Session().region_name or "us-east-1"
         print(f"  ✅ Credentials detected — account {account_id} (region: {region})")
-        print("  ℹ️  Ensure bedrock:InvokeModel is allowed and Claude Fable 5 is enabled")
+        print("  ℹ️  Ensure bedrock:InvokeModel is allowed and Anthropic Claude models are enabled")
         print()
         use_existing = _ask("  Use these credentials? [Y/n]", "Y")
         if use_existing.lower() not in ("n", "no"):

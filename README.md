@@ -68,7 +68,7 @@ astra --checks-only -m security -o results.json
 2. **AWS credentials** with read-only access:
    - `arn:aws:iam::aws:policy/SecurityAudit`
    - `arn:aws:iam::aws:policy/ReadOnlyAccess`
-3. **Amazon Bedrock** model access enabled (Claude Fable 5 or latest available, region: us-east-1)
+3. **Amazon Bedrock** model access enabled (Anthropic Claude models (Opus 4.8 or latest), region: us-east-1)
 
 > 💡 **Don't have credentials configured?** Just run `astra` — it will detect this and guide you through setup step by step with copy-paste commands.
 

@@ -17,7 +17,7 @@ ASTRA assesses your AWS account using **read-only access** and produces a report
 
 - Python 3.11+
 - AWS credentials with read-only access
-- Amazon Bedrock model access (Claude Fable 5 or latest) in us-east-1
+- Amazon Bedrock model access (Anthropic Claude models) in us-east-1
 
 ### Step 1: Install
 
@@ -48,7 +48,7 @@ aws sts assume-role \
 ### Step 3: Enable Bedrock Model Access
 
 In the AWS Console → Amazon Bedrock → Model access:
-- Enable **Claude Fable 5** (or latest Anthropic Claude model)
+- Enable **Anthropic Claude models** (Opus 4.8 or latest)
 - Region: us-east-1
 
 ### Step 4: Run Assessment
