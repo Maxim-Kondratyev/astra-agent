@@ -4,25 +4,25 @@ import boto3
 
 # Ordered from most capable to least capable
 MODEL_PREFERENCE = [
-    "us.anthropic.claude-fable-5-20250617",
+    "anthropic.claude-fable-5",
     "us.anthropic.claude-opus-4-0",
     "us.anthropic.claude-sonnet-4-20250514",
-    "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
-    "us.anthropic.claude-3-5-sonnet-20240620-v1:0",
     "anthropic.claude-3-5-sonnet-20241022-v2:0",
+    "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
     "anthropic.claude-3-5-sonnet-20240620-v1:0",
     "anthropic.claude-3-sonnet-20240229-v1:0",
+    "anthropic.claude-3-5-haiku-20241022-v1:0",
 ]
 
 MODEL_NAMES = {
-    "us.anthropic.claude-fable-5-20250617": "Claude Fable 5 (latest)",
+    "anthropic.claude-fable-5": "Claude Fable 5 (latest)",
     "us.anthropic.claude-opus-4-0": "Claude Opus 4",
     "us.anthropic.claude-sonnet-4-20250514": "Claude Sonnet 4",
-    "us.anthropic.claude-3-5-sonnet-20241022-v2:0": "Claude 3.5 Sonnet v2",
-    "us.anthropic.claude-3-5-sonnet-20240620-v1:0": "Claude 3.5 Sonnet",
     "anthropic.claude-3-5-sonnet-20241022-v2:0": "Claude 3.5 Sonnet v2",
+    "us.anthropic.claude-3-5-sonnet-20241022-v2:0": "Claude 3.5 Sonnet v2",
     "anthropic.claude-3-5-sonnet-20240620-v1:0": "Claude 3.5 Sonnet",
     "anthropic.claude-3-sonnet-20240229-v1:0": "Claude 3 Sonnet",
+    "anthropic.claude-3-5-haiku-20241022-v1:0": "Claude 3.5 Haiku",
 }
 
 
