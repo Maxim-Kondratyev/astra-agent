@@ -13,6 +13,67 @@ Takes 5 minutes to set up, 60 seconds to run, costs < $0.10 per assessment.
 
 ---
 
+## How ASTRA Works (Transparency)
+
+When you run `astra`, here's exactly what happens:
+
+### Phase 1: Infrastructure Checks (10-20 seconds, $0.00)
+
+ASTRA calls **read-only AWS APIs** to inspect your environment. These are the same APIs you'd use if you ran `aws ec2 describe-instances` or `aws rds describe-db-instances` manually — just automated across 34 checks.
+
+**What it reads:**
+- EC2: instances, security groups, VPCs, subnets, NAT gateways, EBS volumes
+- RDS: database instances, backup configuration
+- IAM: password policy, roles, permission boundaries, access analyzers
+- Security services: Security Hub, GuardDuty, CloudTrail, KMS keys, Secrets Manager
+- Networking: load balancers, Route 53 health checks, VPC flow logs
+- Storage: S3 bucket configurations and policies
+- Compute: Lambda functions, Auto Scaling groups
+- Monitoring: CloudWatch alarms and dashboards
+- Backup: AWS Backup plans and vaults
+- Tags: resource tagging and cost allocation tags
+
+**What it does NOT read:** S3 object contents, Secrets Manager secret values, application data, logs content, or any customer data.
+
+### Phase 2: AI Analysis (15-30 seconds, ~$0.04)
+
+The structured check results (PASS/FAIL/WARNING for each of 34 checks) are sent to **Amazon Bedrock** (Claude Opus 4.8) along with:
+- Well-Architected Framework best practices (built-in knowledge base)
+- Your architecture documents (if you provided them via `--context-dir`)
+
+The AI produces:
+- An overall score (0-100) and risk level
+- Executive summary connecting findings across modules
+- Priority-ordered recommendations with risk consequences
+- Per-module scoring
+
+**Where your data goes:** To Amazon Bedrock in your configured AWS region. Data does not leave AWS. No data is stored after the response is generated.
+
+### Phase 3: Report & Chat (instant)
+
+The AI's JSON output is transformed into a styled HTML report with:
+- Score visualisation
+- Architecture diagram (from infrastructure discovery in Phase 1)
+- Checklist summary table
+- Detailed findings with affected resources
+- Top recommendations with "risk if not addressed"
+
+If you choose chat mode, a new conversation begins with the full report as context — allowing you to ask specific questions about remediation.
+
+### What ASTRA References
+
+All checks map to official AWS Well-Architected Framework best practices:
+
+| Reference | Source |
+|-----------|--------|
+| SEC 1–9 | [Well-Architected Security Pillar](https://docs.aws.amazon.com/wellarchitected/latest/framework/a-security.html) |
+| REL 6–13 | [Well-Architected Reliability Pillar](https://docs.aws.amazon.com/wellarchitected/latest/framework/a-reliability.html) |
+| SaaS Lens | [Well-Architected SaaS Lens](https://docs.aws.amazon.com/wellarchitected/latest/saas-lens/saas-lens.html) |
+
+Each finding in the report includes the specific WA question it maps to, so you can trace recommendations back to AWS official guidance.
+
+---
+
 This guide covers everything you need before running your first assessment.
 
 ---
