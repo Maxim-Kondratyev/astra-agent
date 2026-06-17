@@ -3,10 +3,10 @@
 import boto3
 
 # Ordered from most capable to least capable
-# Newer models require inference profiles (us. prefix)
+# Note: Fable 5 requires data retention opt-out (not all accounts have it)
 MODEL_PREFERENCE = [
-    "us.anthropic.claude-fable-5",
     "us.anthropic.claude-opus-4-8",
+    "us.anthropic.claude-fable-5",
     "us.anthropic.claude-opus-4-7",
     "us.anthropic.claude-opus-4-6-v1",
     "us.anthropic.claude-sonnet-4-6",
@@ -18,8 +18,8 @@ MODEL_PREFERENCE = [
 ]
 
 MODEL_NAMES = {
-    "us.anthropic.claude-fable-5": "Claude Fable 5 (latest)",
     "us.anthropic.claude-opus-4-8": "Claude Opus 4.8",
+    "us.anthropic.claude-fable-5": "Claude Fable 5",
     "us.anthropic.claude-opus-4-7": "Claude Opus 4.7",
     "us.anthropic.claude-opus-4-6-v1": "Claude Opus 4.6",
     "us.anthropic.claude-sonnet-4-6": "Claude Sonnet 4.6",
