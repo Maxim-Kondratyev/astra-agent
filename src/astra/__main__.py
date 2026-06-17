@@ -47,6 +47,12 @@ def main():
         print("  Mode    : assessment → interactive chat")
     print("=" * 60 + "\n")
 
+    # Preflight checks
+    from astra.preflight import print_preflight_results, run_preflight
+    errors = run_preflight(region=args.region, model_id=args.model, checks_only=args.checks_only)
+    if not print_preflight_results(errors):
+        sys.exit(1)
+
     result = run_assessment(
         modules=modules,
         model_id=args.model,

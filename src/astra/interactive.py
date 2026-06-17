@@ -220,6 +220,16 @@ def _confirm_and_run(modules: list[str], aws_config: dict, context_dir: str | No
     """Show summary and confirm before running."""
     print()
     print("━" * 60)
+    print("⚙️  Preflight checks")
+    print("━" * 60)
+    print()
+
+    from astra.preflight import print_preflight_results, run_preflight
+    errors = run_preflight(region=aws_config.get("region", "us-east-1"))
+    if not print_preflight_results(errors):
+        sys.exit(1)
+
+    print("━" * 60)
     print("✅ Ready to assess")
     print("━" * 60)
     print()
