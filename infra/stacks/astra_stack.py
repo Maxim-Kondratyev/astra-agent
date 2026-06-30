@@ -67,13 +67,15 @@ class AstraStack(cdk.Stack):
 
         reports_bucket.grant_put(astra_role)
 
-        # Explicit DENY on ALL mutations
+        # Explicit DENY on ALL mutations + sensitive data access
         astra_role.add_to_policy(iam.PolicyStatement(
             sid="DenyAllMutatingActions",
             effect=iam.Effect.DENY,
             actions=[
                 "ec2:Terminate*", "ec2:Delete*", "ec2:Modify*", "ec2:Create*", "ec2:Run*", "ec2:Stop*", "ec2:Start*",
                 "s3:Delete*", "s3:PutBucketPolicy", "s3:PutBucketAcl",
+                "s3:GetObject", "s3:GetObjectVersion", "s3:GetObjectTorrent",
+                "secretsmanager:GetSecretValue",
                 "iam:Create*", "iam:Delete*", "iam:Update*", "iam:Attach*", "iam:Detach*", "iam:Put*",
                 "rds:Delete*", "rds:Modify*", "rds:Create*", "rds:Stop*", "rds:Start*",
                 "lambda:Delete*", "lambda:Update*", "lambda:Create*",

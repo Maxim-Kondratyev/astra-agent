@@ -12,23 +12,29 @@ ASTRA uses two AWS-managed policies that grant read-only access:
 
 ### Layer 2: Explicit Deny (Enforce)
 
-Even if ReadOnlyAccess inadvertently allows a write action, ASTRA's IAM role includes an **explicit deny** statement on all mutating operations:
+Even if ReadOnlyAccess inadvertently allows an action, ASTRA's IAM role includes an **explicit deny** statement that blocks all mutations AND sensitive data access:
 
 ```json
 {
   "Effect": "Deny",
   "Action": [
-    "ec2:Terminate*", "ec2:Delete*", "ec2:Create*", "ec2:Run*", "ec2:Stop*",
-    "s3:Delete*", "s3:PutBucketPolicy",
-    "iam:Create*", "iam:Delete*", "iam:Update*", "iam:Attach*",
-    "rds:Delete*", "rds:Modify*", "rds:Create*",
-    "lambda:Delete*", "lambda:Update*", "lambda:Create*"
+    "ec2:Terminate*", "ec2:Delete*", "ec2:Modify*", "ec2:Create*", "ec2:Run*", "ec2:Stop*", "ec2:Start*",
+    "s3:Delete*", "s3:PutBucketPolicy", "s3:PutBucketAcl",
+    "s3:GetObject", "s3:GetObjectVersion", "s3:GetObjectTorrent",
+    "secretsmanager:GetSecretValue",
+    "iam:Create*", "iam:Delete*", "iam:Update*", "iam:Attach*", "iam:Detach*", "iam:Put*",
+    "rds:Delete*", "rds:Modify*", "rds:Create*", "rds:Stop*", "rds:Start*",
+    "lambda:Delete*", "lambda:Update*", "lambda:Create*",
+    "elasticloadbalancing:Delete*", "elasticloadbalancing:Create*", "elasticloadbalancing:Modify*",
+    "autoscaling:Delete*", "autoscaling:Create*", "autoscaling:Update*",
+    "route53:Change*", "route53:Create*", "route53:Delete*",
+    "cloudwatch:Delete*", "cloudwatch:Put*"
   ],
   "Resource": "*"
 }
 ```
 
-In IAM, **Deny always overrides Allow**. This provides a provable guarantee.
+In IAM, **Deny always overrides Allow**. Even though `ReadOnlyAccess` grants `s3:Get*` and `secretsmanager:GetSecretValue`, the explicit deny blocks these — ASTRA cannot read your file contents or secrets.
 
 ### Layer 3: No Internet (CDK deployment)
 

@@ -33,7 +33,7 @@ ASTRA calls **read-only AWS APIs** to inspect your environment. These are the sa
 - Backup: AWS Backup plans and vaults
 - Tags: resource tagging and cost allocation tags
 
-**What it does NOT read:** S3 object contents, Secrets Manager secret values, application data, logs content, or any customer data.
+**What it does NOT read:** S3 object contents (explicitly denied via IAM), Secrets Manager secret values (explicitly denied), application data, logs content, or any customer data. See [SECURITY.md](SECURITY.md) for the full deny policy.
 
 ### Phase 2: AI Analysis (15-30 seconds, ~$0.04)
 
