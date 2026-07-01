@@ -36,7 +36,7 @@ def main():
     parser.add_argument("--html", help="Save HTML report to file")
     parser.add_argument("--account-id", default=None, help="AWS account ID (auto-detected if omitted)")
     parser.add_argument("--context-dir", "-c", help="Customer architecture docs folder")
-    parser.add_argument("--checks-only", action="store_true", help="Run checks only — no LLM, no cost (CI/CD)")
+    parser.add_argument("--checks-only", action="store_true", help="Run checks only — no LLM, no cost, approximate scores (ideal for CI/CD)")
     parser.add_argument("--chat", action="store_true", help="Interactive mode — discuss findings after assessment")
     args = parser.parse_args()
 
@@ -51,7 +51,7 @@ def main():
     if args.context_dir:
         print(f"  Context : {args.context_dir}")
     if args.checks_only:
-        print("  Mode    : checks-only (no LLM)")
+        print("  Mode    : checks-only (no LLM — fast & free, approximate scores)")
     if args.chat:
         print("  Mode    : assessment → interactive chat")
     print("=" * 60 + "\n")

@@ -88,7 +88,12 @@ def _normalize_checklist_to_findings(data: dict) -> dict:
         # Risk level from score
         s = data["overall_score"]
         data["risk_level"] = "LOW" if s >= 80 else "MEDIUM" if s >= 60 else "HIGH" if s >= 40 else "CRITICAL"
-        data["summary"] = data.get("executive_summary", "Automated checks completed. Run without --checks-only for AI-powered analysis with tailored recommendations.")
+        data["summary"] = data.get("executive_summary", (
+            "⚡ Checks-only mode — scores are approximate (mechanical calculation). "
+            "Recommendations are generic per-check guidance without cross-finding correlation or risk prioritisation. "
+            "Run without --checks-only for AI-powered analysis: contextual scoring, compound risk detection, "
+            "and tailored remediation plans ranked by business impact."
+        ))
 
     if "checks" in data and "findings" not in data:
         findings = []
@@ -132,6 +137,20 @@ def generate_html_report(agent_output: str, account_id: str = "Unknown", mermaid
     findings = data.get("findings", [])
     modules_assessed = data.get("modules_assessed", ["security"])
     scores_by_module = data.get("scores_by_module", {})
+
+    # Detect checks-only mode and show a prominent banner
+    is_checks_only = "Checks-only mode" in summary or "top_recommendations" not in data
+    checks_only_banner = ""
+    if is_checks_only and not data.get("top_recommendations"):
+        checks_only_banner = '''<div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #f59e0b;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;">
+<div style="font-weight:600;font-size:0.95rem;color:#92400e;margin-bottom:0.4rem;">⚡ Checks-Only Mode — Approximate Results</div>
+<div style="font-size:0.82rem;color:#78350f;line-height:1.6;">
+<strong>What you see:</strong> Raw pass/fail results with mechanical scoring (100 minus flat deductions per failure).<br/>
+<strong>What's missing:</strong> AI-powered contextual analysis, compound risk detection, severity-weighted scoring, and tailored remediation plans.<br/>
+<strong>Why it matters:</strong> Full mode correlates findings (e.g. "no backups + single-AZ = critical data loss risk") and prioritises by business impact — not just pass/fail count.<br/>
+<strong>To get the full report:</strong> <code style="background:#fde68a;padding:2px 8px;border-radius:4px;">astra</code> (without --checks-only). Costs ~$0.05–0.10 per run.
+</div></div>'''
+
     # Legacy format support
     if not scores_by_module and "scores_by_category" in data:
         scores_by_module = {"security": {"score": score, "categories": data["scores_by_category"]}}
@@ -296,6 +315,8 @@ footer .guarantee {{ background:linear-gradient(135deg,#f0fdf4,#dcfce7); border:
     <div class="subtitle" style="font-size:0.95rem;opacity:0.9;margin-bottom:0.6rem;">Autonomous assessment of your AWS environment against Well-Architected Framework best practices</div>
     <div class="subtitle">Account: {account_id} · {timestamp} · Modules: {', '.join(MODULE_NAMES.get(m, m) for m in modules_assessed)}</div>
 </header>
+
+{checks_only_banner}
 
 <div class="score-section">
     <div class="score-circle" style="background:{score_color(score)};">
