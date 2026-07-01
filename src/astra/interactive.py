@@ -2,6 +2,7 @@
 
 import os
 import sys
+from datetime import datetime
 from pathlib import Path
 
 import boto3
@@ -297,7 +298,7 @@ def run_interactive():
     )
 
     # Save report
-    report_file = f"astra-report-{config['account_id']}.html"
+    report_file = f"astra-report-{config['account_id']}-{datetime.now().strftime('%Y%m%d-%H%M')}.html"
     from astra.report.generator import generate_html_report
     html = generate_html_report(result["report"], account_id=config["account_id"], mermaid_diagram=result.get("mermaid_diagram"))
     with open(report_file, "w") as f:

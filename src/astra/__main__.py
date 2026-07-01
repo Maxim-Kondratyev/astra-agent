@@ -96,7 +96,9 @@ def main():
     # Auto-generate HTML and open when no output flags specified (user comfort)
     if not args.output and not args.html:
         import os
-        html_file = f"astra-report-{result['account_id']}.html"
+        from datetime import datetime
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M")
+        html_file = f"astra-report-{result['account_id']}-{timestamp}.html"
         html = generate_html_report(report, account_id=result["account_id"], mermaid_diagram=result.get("mermaid_diagram"))
         with open(html_file, "w") as f:
             f.write(html)
