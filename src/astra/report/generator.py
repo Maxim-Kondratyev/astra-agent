@@ -55,6 +55,41 @@ MODULE_NAMES = {"security": "Security", "resilience": "Resilience", "saas": "Saa
 
 def _normalize_checklist_to_findings(data: dict) -> dict:
     """Convert checklist report format to the standard findings format for HTML rendering."""
+    # Checks-only mode: compute mechanical scores if not present
+    if "overall_score" not in data and "checks" in data:
+        checks = data["checks"]
+        modules = data.get("modules_assessed", list({c.get("module", "security") for c in checks if c.get("module")}))
+        if not modules:
+            modules = ["security", "resilience", "saas"]
+        data["modules_assessed"] = modules
+
+        # Compute per-module scores: start at 100, deduct per FAIL/WARNING
+        scores_by_module = {}
+        for mod in modules:
+            mod_checks = [c for c in checks if c.get("module", "").startswith(mod[:3])]
+            if not mod_checks:
+                # Infer module from check_id prefix
+                prefix_map = {"SEC": "security", "REL": "resilience", "SAA": "saas"}
+                mod_checks = [c for c in checks if prefix_map.get(c.get("check_id", "")[:3]) == mod]
+            score = 100
+            for c in mod_checks:
+                if c.get("status") == "FAIL":
+                    score -= 8
+                elif c.get("status") == "WARNING":
+                    score -= 4
+            score = max(0, score)
+            scores_by_module[mod] = {"score": score, "summary": "", "categories": {mod.title(): score}}
+        data["scores_by_module"] = scores_by_module
+
+        # Overall score = average of module scores
+        all_scores = [m["score"] for m in scores_by_module.values()]
+        data["overall_score"] = round(sum(all_scores) / len(all_scores)) if all_scores else 0
+
+        # Risk level from score
+        s = data["overall_score"]
+        data["risk_level"] = "LOW" if s >= 80 else "MEDIUM" if s >= 60 else "HIGH" if s >= 40 else "CRITICAL"
+        data["summary"] = data.get("executive_summary", "Automated checks completed. Run without --checks-only for AI-powered analysis with tailored recommendations.")
+
     if "checks" in data and "findings" not in data:
         findings = []
         for check in data["checks"]:

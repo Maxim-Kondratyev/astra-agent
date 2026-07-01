@@ -9,6 +9,15 @@ from astra.report.generator import generate_html_report
 VALID_MODULES = ("security", "resilience", "saas", "all")
 
 
+def _open_in_browser(path: str):
+    """Open an HTML file in the default browser."""
+    import os
+    import webbrowser
+    full_path = os.path.abspath(path)
+    webbrowser.open(f"file://{full_path}")
+    print("   📂 Opened in browser")
+
+
 def main():
     # If no arguments provided, launch interactive guided flow
     if len(sys.argv) == 1:
@@ -76,22 +85,32 @@ def main():
             f.write(report)
         print(f"\n✅ JSON report → {args.output}")
 
-    if args.html and not args.checks_only:
+    # HTML report — works in both full and checks-only modes
+    if args.html:
         html = generate_html_report(report, account_id=result["account_id"], mermaid_diagram=result.get("mermaid_diagram"))
         with open(args.html, "w") as f:
             f.write(html)
         print(f"✅ HTML report → {args.html}")
+        _open_in_browser(args.html)
 
-    if not args.output and not args.html and not args.chat:
-        print("\n" + report)
+    # Auto-generate HTML and open when no output flags specified (user comfort)
+    if not args.output and not args.html:
+        import os
+        html_file = f"astra-report-{result['account_id']}.html"
+        html = generate_html_report(report, account_id=result["account_id"], mermaid_diagram=result.get("mermaid_diagram"))
+        with open(html_file, "w") as f:
+            f.write(html)
+        full_path = os.path.abspath(html_file)
+        print(f"\n✅ HTML report → {full_path}")
+        _open_in_browser(full_path)
 
     # Interactive chat mode
     if args.chat and not args.checks_only:
         from astra.chat import start_chat
         start_chat(report=report, model_id=args.model, region=args.region)
 
-    # Exit code for CI/CD
-    if args.checks_only:
+    # Exit code for CI/CD (only when --output is used, not when auto-opening browser)
+    if args.checks_only and args.output:
         failed = sum(1 for r in result["raw_results"] if r.get("status") == "FAIL")
         if failed:
             sys.exit(1)

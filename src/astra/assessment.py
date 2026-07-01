@@ -226,14 +226,23 @@ def run_assessment(
     # Checks-only mode: return raw results as JSON, no LLM call
     if checks_only:
         from astra.diagram import generate_html_diagram
+
+        # Tag each check with its module based on prefix
+        prefix_to_module = {"SEC": "security", "REL": "resilience", "SAA": "saas"}
+        checks_with_module = []
+        for r in all_results:
+            d = asdict(r)
+            d["module"] = prefix_to_module.get(r.check_id[:3], "security")
+            checks_with_module.append(d)
+
         return {
             "account_id": account_id,
             "modules": modules,
-            "raw_results": [asdict(r) for r in all_results],
+            "raw_results": checks_with_module,
             "report": json.dumps({
                 "account_id": account_id,
                 "modules_assessed": modules,
-                "checks": [asdict(r) for r in all_results],
+                "checks": checks_with_module,
                 "total_checks": len(all_results),
                 "passed": sum(1 for r in all_results if r.status == Status.PASS),
                 "failed": sum(1 for r in all_results if r.status == Status.FAIL),
